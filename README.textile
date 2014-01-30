@@ -1,6 +1,39 @@
 h1. payment4j
 
-An abstraction layer over various payment services like Paypal, AuthorizeNet, Stripe...
+An abstraction layer over various payment services like Paypal, AuthorizeNet, Stripe... payment4j allows you to create a shopping site without the heavy part of dealing with a custom API.
+
+h2. Usage
+
+Simple purchase
+<code>
+		CreditCard creditCard = new CreditCard().setNumber("4007000000027")
+				.setType(CreditCardType.VISA).setFirstName("John")
+				.setLastName("Doe").setMonth(12).setYear(2015)
+				.setVerificationValue("000");
+
+		AuthorizeNetGateway
+				.build(true, "authorizenet.apiLoginId",
+						"authorizenet.transactionKey").transactionGateway()
+				.purchase(Money.of(CurrencyUnit.EUR, 10), creditCard);
+</code>
+
+Recurring
+<code>
+		CreditCard creditCard = new CreditCard().setNumber("4007000000027")
+				.setType(CreditCardType.VISA).setFirstName("John")
+				.setLastName("Doe").setMonth(12).setYear(2015)
+				.setVerificationValue("000");
+
+		Schedule schedule = new Schedule();
+		schedule.setEach(ScheduleUnit.MONTH);
+		schedule.setTotalOccurences(3);
+
+		AuthorizeNetGateway
+				.build(true, "authorizenet.apiLoginId",
+						"authorizenet.transactionKey")
+				.recurringGateway()
+				.recurring(Money.of(CurrencyUnit.EUR, 10), creditCard, schedule);
+</code>
 
 h2. Integrations
 
@@ -12,7 +45,7 @@ h2. Integrations
 | BrainTree  | 10%              |
 | PayBox  | 0%              |
 
-h2. Usage
+h2. Build the project
 
 <pre>
 mvn clean install -DskipTests
