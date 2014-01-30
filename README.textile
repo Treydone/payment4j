@@ -2,6 +2,15 @@ h1. payment4j
 
 An abstraction layer over various payment services like Paypal, AuthorizeNet, Stripe...
 
+h2.
+
+|_. Provider     |_.  Progession       |
+| Paypal         | 30%              |
+| AuthorizeNet         | 50%              |
+| Stripe         | 30%              |
+| Litle         | 10%              |
+| BrainTree  | 10%              |
+
 h2. usage
 
-h3. testing
+h2. testing
