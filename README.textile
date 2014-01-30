@@ -34,6 +34,16 @@ AuthorizeNetGateway
 			.recurring(Money.of(CurrencyUnit.EUR, 10), creditCard, schedule);
 </pre></code>
 
+h2. API
+
+Each provider gateway can expose one or more gateways:
+
+|_. Gateway     |_.  Features       |
+| TransactionGateway         | Basic features: purchase, cancel, authorize, refund, credit              |
+| RecurringGateway         | Reccuring payment              |
+| HistoryGateway         | View the last transaction, query and list transactions              |
+| CreditCardStoreGateway         | Manage credit card on a provider for your customers |
+
 h2. Integrations
 
 |_. Provider     |_.  Progession       |
