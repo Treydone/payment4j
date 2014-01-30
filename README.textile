@@ -2,7 +2,7 @@ h1. payment4j
 
 An abstraction layer over various payment services like Paypal, AuthorizeNet, Stripe...
 
-h2.
+h2. Integrations
 
 |_. Provider     |_.  Progession       |
 | Paypal         | 30%              |
@@ -10,7 +10,27 @@ h2.
 | Stripe         | 30%              |
 | Litle         | 10%              |
 | BrainTree  | 10%              |
+| PayBox  | 0%              |
 
-h2. usage
+h2. Usage
 
-h2. testing
+<pre>
+mvn clean install -DskipTests
+</pre>
+
+(Yeah, all tests are not fixed yet...)
+
+h2. Testing
+
+Since we need some accounts for testing and we can't expose them in public, you have to create a properties file in src/main/test named "accounts.properties". A template is already present in the folder, just remane it "accouts.properties" and fill the blank inside.
+
+<pre>
+# BrainTree
+braintree.merchantId=xxxxx
+braintree.publicKey=xxxxx
+braintree.privateKey=xxxxx
+			
+# AuthorizeNet 
+authorizenet.apiLoginId=xxxxx
+authorizenet.transactionKey=xxxxx
+</pre>
