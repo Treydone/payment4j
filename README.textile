@@ -5,35 +5,34 @@ An abstraction layer over various payment services like Paypal, AuthorizeNet, St
 h2. Usage
 
 Simple purchase
-<code>
-		CreditCard creditCard = new CreditCard().setNumber("4007000000027")
-				.setType(CreditCardType.VISA).setFirstName("John")
-				.setLastName("Doe").setMonth(12).setYear(2015)
-				.setVerificationValue("000");
+<pre lang="java"><code>
+CreditCard creditCard = new CreditCard().setNumber("4007000000027")
+		.setType(CreditCardType.VISA).setFirstName("John")
+		.setLastName("Doe").setMonth(12).setYear(2015)
+		.setVerificationValue("000");
 
-		AuthorizeNetGateway
-				.build(true, "authorizenet.apiLoginId",
-						"authorizenet.transactionKey").transactionGateway()
+AuthorizeNetGateway
+		.build(true, "authorizenet.apiLoginId","authorizenet.transactionKey").
+			transactionGateway()
 				.purchase(Money.of(CurrencyUnit.EUR, 10), creditCard);
-</code>
+</pre></code>
 
 Recurring
-<code>
-		CreditCard creditCard = new CreditCard().setNumber("4007000000027")
-				.setType(CreditCardType.VISA).setFirstName("John")
-				.setLastName("Doe").setMonth(12).setYear(2015)
-				.setVerificationValue("000");
+<pre lang="java"><code>
+CreditCard creditCard = new CreditCard().setNumber("4007000000027")
+		.setType(CreditCardType.VISA).setFirstName("John")
+		.setLastName("Doe").setMonth(12).setYear(2015)
+		.setVerificationValue("000");
 
-		Schedule schedule = new Schedule();
-		schedule.setEach(ScheduleUnit.MONTH);
-		schedule.setTotalOccurences(3);
+Schedule schedule = new Schedule();
+schedule.setEach(ScheduleUnit.MONTH);
+schedule.setTotalOccurences(3);
 
-		AuthorizeNetGateway
-				.build(true, "authorizenet.apiLoginId",
-						"authorizenet.transactionKey")
-				.recurringGateway()
-				.recurring(Money.of(CurrencyUnit.EUR, 10), creditCard, schedule);
-</code>
+AuthorizeNetGateway
+	.build(true, "authorizenet.apiLoginId","authorizenet.transactionKey")
+		.recurringGateway()
+			.recurring(Money.of(CurrencyUnit.EUR, 10), creditCard, schedule);
+</pre></code>
 
 h2. Integrations
 
