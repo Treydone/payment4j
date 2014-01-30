@@ -1,0 +1,22 @@
+# Stripe
+stripe.apiKey=
+
+# Paypal
+paypal.user=
+paypal.vendor=
+paypal.partner=
+paypal.password=
+
+# Litle
+litle.username=
+litle.password=
+litle.merchantId=
+			
+# BrainTree
+braintree.merchantId=
+braintree.publicKey=
+braintree.privateKey=
+			
+# AuthorizeNet 
+authorizenet.apiLoginId=
+authorizenet.transactionKey=			
