@@ -5,7 +5,7 @@ public class IncorrectCreditCardNumberException extends CreditCardException {
 	public IncorrectCreditCardNumberException(CreditCard creditCard) {
 		super(creditCard, "Credit card number "
 				+ (creditCard != null ? creditCard.toString() : "")
-				+ " is invalid.");
+				+ " is incorrect.");
 	}
 
 	public IncorrectCreditCardNumberException(String message, Throwable throwable) {

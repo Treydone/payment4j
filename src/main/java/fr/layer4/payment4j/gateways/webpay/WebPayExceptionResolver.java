@@ -1,10 +1,9 @@
-package fr.layer4.payment4j.gateways.stripe;
+package fr.layer4.payment4j.gateways.webpay;
 
-import com.stripe.exception.APIException;
-import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.InvalidRequestException;
-
+import jp.webpay.exception.APIException;
+import jp.webpay.exception.AuthenticationException;
+import jp.webpay.exception.CardException;
+import jp.webpay.exception.InvalidRequestException;
 import fr.layer4.payment4j.CreditCardException;
 import fr.layer4.payment4j.ExceptionResolver;
 import fr.layer4.payment4j.ExpiredCreditCardException;
@@ -14,12 +13,9 @@ import fr.layer4.payment4j.InvalidApiUsageException;
 import fr.layer4.payment4j.InvalidVerificationCodeException;
 import fr.layer4.payment4j.UnknownTransactionException;
 
-public class StripeExceptionResolver implements ExceptionResolver {
+public class WebPayExceptionResolver implements ExceptionResolver {
 
 	public Throwable resolve(Throwable throwable) {
-		// Because all stripe exceptions are wrapped in a runtime exception:
-		throwable = throwable.getCause();
-
 		if (throwable instanceof AuthenticationException) {
 			throw new fr.layer4.payment4j.AuthenticationException(
 					throwable.getMessage(), throwable);
@@ -48,7 +44,7 @@ public class StripeExceptionResolver implements ExceptionResolver {
 					cardException);
 		} else if (throwable instanceof InvalidRequestException) {
 			InvalidRequestException invalidRequestException = (InvalidRequestException) throwable;
-			if (invalidRequestException.getMessage().contains("No such charge")) {
+			if (invalidRequestException.getMessage().contains("No such")) {
 				throw new UnknownTransactionException(
 						invalidRequestException.getMessage(),
 						invalidRequestException);

@@ -18,9 +18,8 @@ public class CreditCard {
 
 	private CreditCardType type;
 
-	// TODO
-	public boolean isValid() {
-		return true;
+	public String getFullName() {
+		return firstName + " " + lastName;
 	}
 
 	public String getNumber() {
