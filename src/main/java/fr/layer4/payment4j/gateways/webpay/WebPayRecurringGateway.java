@@ -15,6 +15,7 @@ import com.stripe.model.Subscription;
 
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.Gateway;
+import fr.layer4.payment4j.Result;
 import fr.layer4.payment4j.Schedule;
 import fr.layer4.payment4j.gateways.AbstractRecurringGateway;
 
@@ -28,7 +29,7 @@ public class WebPayRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected String doRecurring(Money money, CreditCard creditCard,
+	protected Result doRecurring(Money money, CreditCard creditCard,
 			Schedule schedule) {
 		Date startDate = schedule.getStartDate();
 		if (startDate == null) {
@@ -84,16 +85,22 @@ public class WebPayRecurringGateway extends AbstractRecurringGateway {
 		} catch (StripeException e) {
 			e.printStackTrace();
 		}
-		return ref;
+		Result result2 = new Result();
+		result2.setSuccess(true);
+		result2.setRecurringRef(ref);
+		return result2;
 	}
 
 	@Override
-	protected void doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference) {
 		try {
 			Customer cu = Customer.retrieve("cus_3QZq87ZoS9yOwO");
 			cu.cancelSubscription(apiKey);
 		} catch (StripeException e) {
 			e.printStackTrace();
 		}
+		Result result2 = new Result();
+		result2.setSuccess(true);
+		return result2;
 	}
 }

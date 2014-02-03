@@ -8,7 +8,7 @@
 		</encoder>
 	</appender>
 
-	<!-- <logger name="ro.isdc.wro" level="debug" /> -->
+	<logger name="fr.layer4" level="debug" />
 
 	<root level="warn">
 		<appender-ref ref="stdout" />

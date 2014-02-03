@@ -18,6 +18,7 @@ import paypal.payflow.Response;
 import paypal.payflow.UserInfo;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.Gateway;
+import fr.layer4.payment4j.Result;
 import fr.layer4.payment4j.Schedule;
 import fr.layer4.payment4j.gateways.AbstractRecurringGateway;
 
@@ -38,7 +39,7 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected String doRecurring(Money money, CreditCard creditcard,
+	protected Result doRecurring(Money money, CreditCard creditcard,
 			Schedule schedule) {
 
 		UserInfo info = new UserInfo(user, vendor, partner, password);
@@ -116,11 +117,15 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
 		PaypalUtils.extractResult(resp);
-		return resp.getRecurringResponse().getRpRef();
+
+		Result result2 = new Result();
+		result2.setSuccess(true);
+		result2.setRecurringRef(resp.getRecurringResponse().getRpRef());
+		return result2;
 	}
 
 	@Override
-	protected void doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference) {
 
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
@@ -135,5 +140,9 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
+
+		Result result2 = new Result();
+		result2.setSuccess(true);
+		return result2;
 	}
 }

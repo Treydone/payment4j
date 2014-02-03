@@ -10,6 +10,16 @@ public class Result {
 
 	private String responseCode;
 
+	private String recurringRef;
+
+	public String getRecurringRef() {
+		return recurringRef;
+	}
+
+	public void setRecurringRef(String recurringRef) {
+		this.recurringRef = recurringRef;
+	}
+
 	public String getResponseCode() {
 		return responseCode;
 	}

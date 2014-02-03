@@ -16,31 +16,35 @@ public class Schedule {
 		return interval;
 	}
 
-	public void setInterval(int interval) {
+	public Schedule setInterval(int interval) {
 		this.interval = interval;
+		return this;
 	}
 
 	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public Schedule setStartDate(Date startDate) {
 		this.startDate = startDate;
+		return this;
 	}
 
 	public int getTotalOccurences() {
 		return totalOccurences;
 	}
 
-	public void setTotalOccurences(int totalOccurences) {
+	public Schedule setTotalOccurences(int totalOccurences) {
 		this.totalOccurences = totalOccurences;
+		return this;
 	}
 
 	public ScheduleUnit getEach() {
 		return each;
 	}
 
-	public void setEach(ScheduleUnit each) {
+	public Schedule setEach(ScheduleUnit each) {
 		this.each = each;
+		return this;
 	}
 }

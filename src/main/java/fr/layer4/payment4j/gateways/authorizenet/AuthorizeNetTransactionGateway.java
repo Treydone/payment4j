@@ -10,7 +10,6 @@ import net.authorize.TransactionType;
 import net.authorize.aim.Transaction;
 import net.authorize.data.OrderItem;
 import net.authorize.data.ShippingAddress;
-import net.authorize.data.creditcard.CardType;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.money.CurrencyUnit;
@@ -50,7 +49,8 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		// create transaction
 		Transaction creditTransaction = merchant.createAIMTransaction(
 				TransactionType.CREDIT, money.getAmount());
-		creditTransaction.setCreditCard(convertCreditCard(creditcard));
+		creditTransaction.setCreditCard(AuthorizeNetUtils
+				.convertCreditCard(creditcard));
 
 		net.authorize.aim.Result authorizeNetResult = (net.authorize.aim.Result) merchant
 				.postTransaction(creditTransaction);
@@ -100,7 +100,8 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 			}
 		}
 
-		authCaptureTransaction.setCreditCard(convertCreditCard(creditcard));
+		authCaptureTransaction.setCreditCard(AuthorizeNetUtils
+				.convertCreditCard(creditcard));
 
 		Authorization authorization = new Authorization();
 		authorization.setTransactionId(authCaptureTransaction
@@ -174,19 +175,6 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 					+ authorizeNetResult.getResponseText());
 		}
 		return result;
-	}
-
-	private net.authorize.data.creditcard.CreditCard convertCreditCard(
-			CreditCard creditcard) {
-		net.authorize.data.creditcard.CreditCard creditCard = net.authorize.data.creditcard.CreditCard
-				.createCreditCard();
-		creditCard.setCreditCardNumber(creditcard.getNumber());
-		creditCard.setExpirationMonth(String.valueOf(creditcard.getMonth()));
-		creditCard.setExpirationYear(String.valueOf(creditcard.getYear()));
-		creditCard.setCardType(CardType
-				.findByValue(creditcard.getType().name()));
-		creditCard.setCardCode(creditcard.getVerificationValue());
-		return creditCard;
 	}
 
 	public Set<CreditCardType> getSupportedCreditCardTypes() {

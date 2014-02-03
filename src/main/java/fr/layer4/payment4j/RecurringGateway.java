@@ -4,7 +4,7 @@ import org.joda.money.Money;
 
 public interface RecurringGateway {
 
-	String recurring(Money money, CreditCard creditCard, Schedule schedule);
-	
-	void cancel(String recurringReference);
+	Result recurring(Money money, CreditCard creditCard, Schedule schedule);
+
+	Result cancel(String recurringReference);
 }

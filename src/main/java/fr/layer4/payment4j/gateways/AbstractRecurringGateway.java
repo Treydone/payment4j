@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.Gateway;
 import fr.layer4.payment4j.RecurringGateway;
+import fr.layer4.payment4j.Result;
 import fr.layer4.payment4j.Schedule;
 
 public abstract class AbstractRecurringGateway implements RecurringGateway {
@@ -19,7 +20,8 @@ public abstract class AbstractRecurringGateway implements RecurringGateway {
 		this.gateway = gateway;
 	}
 
-	public String recurring(Money money, CreditCard creditCard, Schedule schedule) {
+	public Result recurring(Money money, CreditCard creditCard,
+			Schedule schedule) {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The credit card can not be null",
 				creditCard);
@@ -30,30 +32,34 @@ public abstract class AbstractRecurringGateway implements RecurringGateway {
 		}
 
 		try {
-			return doRecurring(money, creditCard, schedule);
+			Result result = doRecurring(money, creditCard, schedule);
+			GatewayUtils.resoleCode(gateway.getResponseCodeResolver(), result,
+					creditCard, null);
+			return result;
 		} catch (Throwable throwable) {
 			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
 					throwable);
 		}
-		// GatewayUtils.resoleCode(gateway.getResponseCodeResolver(),
-		// transactions.getResult(), null, null);
 	}
 
-	protected abstract String doRecurring(Money money, CreditCard creditCard,
+	protected abstract Result doRecurring(Money money, CreditCard creditCard,
 			Schedule schedule);
 
-	public void cancel(String recurringReference) {
+	public Result cancel(String recurringReference) {
 		Preconditions.checkNotNull("The amount can not be null",
 				recurringReference);
 
 		try {
-			doCancel(recurringReference);
+			Result result = doCancel(recurringReference);
+			GatewayUtils.resoleCode(gateway.getResponseCodeResolver(), result,
+					null, recurringReference);
+			return result;
 		} catch (Throwable throwable) {
 			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
 					throwable);
 		}
 	}
 
-	protected abstract void doCancel(String recurringReference);
+	protected abstract Result doCancel(String recurringReference);
 
 }

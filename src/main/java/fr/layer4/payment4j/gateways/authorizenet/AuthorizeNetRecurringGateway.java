@@ -14,6 +14,7 @@ import org.joda.money.Money;
 
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.Gateway;
+import fr.layer4.payment4j.Result;
 import fr.layer4.payment4j.Schedule;
 import fr.layer4.payment4j.gateways.AbstractRecurringGateway;
 
@@ -30,7 +31,7 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected String doRecurring(Money money, CreditCard creditCard,
+	protected Result doRecurring(Money money, CreditCard creditCard,
 			Schedule schedule) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
@@ -56,12 +57,6 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 		paymentSchedule.setTotalOccurrences(schedule.getTotalOccurences());
 		paymentSchedule.setTrialOccurrences(0);
 
-		// Create a new credit card
-		net.authorize.data.creditcard.CreditCard credit_card = net.authorize.data.creditcard.CreditCard
-				.createCreditCard();
-		credit_card.setCreditCardNumber(creditCard.getNumber());
-		credit_card.setExpirationDate(creditCard.getExpirationAsForCharacter());
-
 		// Create a customer and specify billing info
 		// TODO
 		net.authorize.data.xml.Customer customer = net.authorize.data.xml.Customer
@@ -69,7 +64,8 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 
 		// Create a subscription and specify payment, schedule and customer
 		Subscription subscription = Subscription.createSubscription();
-		subscription.setPayment(Payment.createPayment(credit_card));
+		subscription.setPayment(Payment.createPayment(AuthorizeNetUtils
+				.convertCreditCard(creditCard)));
 		subscription.setSchedule(paymentSchedule);
 		subscription.setCustomer(customer);
 		subscription.setAmount(new BigDecimal(6.00));
@@ -96,11 +92,14 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 					+ " - " + message.getText() + "<br/>");
 		}
 
-		return ref;
+		Result result2 = new Result();
+		result2.setSuccess(true);
+		result2.setRecurringRef(ref);
+		return result2;
 	}
 
 	@Override
-	protected void doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference) {
 
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
@@ -125,5 +124,8 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 			System.out.println("Message code/text: " + message.getCode()
 					+ " - " + message.getText() + "<br/>");
 		}
+		Result result2 = new Result();
+		result2.setSuccess(true);
+		return result2;
 	}
 }

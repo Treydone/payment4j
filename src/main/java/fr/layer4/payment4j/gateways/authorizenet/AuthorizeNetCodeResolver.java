@@ -1,5 +1,8 @@
 package fr.layer4.payment4j.gateways.authorizenet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.layer4.payment4j.AuthenticationException;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.ExpiredCreditCardException;
@@ -12,6 +15,9 @@ import fr.layer4.payment4j.TransactionException;
 import fr.layer4.payment4j.UnknownTransactionException;
 
 public class AuthorizeNetCodeResolver implements ResponseCodeResolver {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AuthorizeNetCodeResolver.class);
 
 	public void resolve(String code, String message, CreditCard creditCard,
 			String transactionId) {
@@ -33,6 +39,7 @@ public class AuthorizeNetCodeResolver implements ResponseCodeResolver {
 		} else if ("RRC_3_78".equals(code)) {
 			throw new InvalidVerificationCodeException(creditCard);
 		} else if (!"RRC_1_1".equals(code)) {
+			LOGGER.debug("code {} ({})is unknown", code, message);
 			throw new PaymentException(message);
 		}
 	}
