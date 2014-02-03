@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.google.common.base.Throwables;
+
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.ExpiredCreditCardException;
 import fr.layer4.payment4j.Gateway;
@@ -183,13 +185,13 @@ public abstract class AbstractTransactionGatewayTest {
 					.equals(expectedExceptionClass.getCanonicalName())) {
 				fail("expected a " + expectedExceptionClass.getCanonicalName()
 						+ " get a " + e.getClass().getCanonicalName() + ": "
-						+ e.getMessage());
+						+ Throwables.getStackTraceAsString(e));
 			} else {
 				// Nice!
 			}
 		} else {
 			fail("get a " + e.getClass().getCanonicalName() + ": "
-					+ e.getMessage());
+					+ Throwables.getStackTraceAsString(e));
 		}
 	}
 
