@@ -11,6 +11,8 @@ import fr.layer4.payment4j.ExpiredCreditCardException;
 import fr.layer4.payment4j.IncorrectCreditCardNumberException;
 import fr.layer4.payment4j.IncorrectVerificationCodeException;
 import fr.layer4.payment4j.InvalidApiUsageException;
+import fr.layer4.payment4j.InvalidCreditCardNumberException;
+import fr.layer4.payment4j.InvalidExpirationDateException;
 import fr.layer4.payment4j.InvalidVerificationCodeException;
 import fr.layer4.payment4j.UnknownTransactionException;
 
@@ -27,20 +29,22 @@ public class StripeExceptionResolver implements ExceptionResolver {
 			CardException cardException = (CardException) throwable;
 			String code = cardException.getCode();
 			if ("invalid_number".equals(code)) {
-				throw new IncorrectCreditCardNumberException(
+				throw new InvalidCreditCardNumberException(
 						cardException.getMessage(), cardException);
 			} else if ("incorrect_number".equals(code)) {
 				throw new IncorrectCreditCardNumberException(
 						cardException.getMessage(), cardException);
-			} else if ("expired_card".equals(code)
-					|| "invalid_expiry_month".equals(code)
-					|| "invalid_expiry_year".equals(code)) {
+			} else if ("expired_card".equals(code)) {
 				throw new ExpiredCreditCardException(
+						cardException.getMessage(), cardException);
+			} else if ("invalid_expiry_month".equals(code)
+					|| "invalid_expiry_year".equals(code)) {
+				throw new InvalidExpirationDateException(
 						cardException.getMessage(), cardException);
 			} else if ("invalid_cvc".equals(code)) {
 				throw new InvalidVerificationCodeException(
 						cardException.getMessage(), cardException);
-			} else if ("inccorect_cvc".equals(code)) {
+			} else if ("incorrect_cvc".equals(code)) {
 				throw new IncorrectVerificationCodeException(
 						cardException.getMessage(), cardException);
 			}

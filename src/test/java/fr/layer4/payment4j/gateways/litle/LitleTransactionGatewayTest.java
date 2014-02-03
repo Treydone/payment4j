@@ -1,7 +1,5 @@
 package fr.layer4.payment4j.gateways.litle;
 
-import org.junit.Before;
-
 import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
@@ -9,17 +7,7 @@ import fr.layer4.payment4j.gateways.Configuration;
 
 public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest {
 
-	@Before
-	public void init() {
-		LitleGateway gateway = LitleGateway.build(true,
-				Configuration.get("litle.username"),
-				Configuration.get("litle.password"),
-				Configuration.get("litle.merchantId"));
-		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
-
-		invalidCredentialsTransactionGateway = LitleGateway.build(true, "6z",
-				"64w", "test").transactionGateway();
+	public void data() {
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002
@@ -41,5 +29,17 @@ public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest 
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2015)
 				.setVerificationValue("000");
+	}
+
+	public void init() {
+		LitleGateway gateway = LitleGateway.build(true,
+				Configuration.get("litle.username"),
+				Configuration.get("litle.password"),
+				Configuration.get("litle.merchantId"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
+
+		invalidCredentialsTransactionGateway = LitleGateway.build(true, "6z",
+				"64w", "test").transactionGateway();
 	}
 }

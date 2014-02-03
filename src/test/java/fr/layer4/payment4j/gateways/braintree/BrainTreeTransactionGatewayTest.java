@@ -6,11 +6,12 @@ import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
 import fr.layer4.payment4j.gateways.Configuration;
+import fr.layer4.payment4j.gateways.authorizenet.AuthorizeNetGateway;
 
 public class BrainTreeTransactionGatewayTest extends
 		AbstractTransactionGatewayTest {
 
-	@Before
+	@Override
 	public void init() {
 		BrainTreeGateway gateway = BrainTreeGateway.build(true,
 				Configuration.get("braintree.merchantId"),
@@ -21,6 +22,10 @@ public class BrainTreeTransactionGatewayTest extends
 
 		invalidCredentialsTransactionGateway = BrainTreeGateway.build(true,
 				"6z", "64w", "").transactionGateway();
+	}
+
+	@Override
+	public void data() {
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002

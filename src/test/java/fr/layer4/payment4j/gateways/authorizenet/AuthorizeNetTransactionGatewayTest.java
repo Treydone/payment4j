@@ -1,7 +1,5 @@
 package fr.layer4.payment4j.gateways.authorizenet;
 
-import org.junit.Before;
-
 import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
@@ -10,7 +8,7 @@ import fr.layer4.payment4j.gateways.Configuration;
 public class AuthorizeNetTransactionGatewayTest extends
 		AbstractTransactionGatewayTest {
 
-	@Before
+	@Override
 	public void init() {
 		AuthorizeNetGateway gateway = AuthorizeNetGateway.build(true,
 				Configuration.get("authorizenet.apiLoginId"),
@@ -20,6 +18,10 @@ public class AuthorizeNetTransactionGatewayTest extends
 
 		invalidCredentialsTransactionGateway = AuthorizeNetGateway.build(true,
 				"6", "64").transactionGateway();
+	}
+
+	@Override
+	public void data() {
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002
@@ -33,6 +35,18 @@ public class AuthorizeNetTransactionGatewayTest extends
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2015)
 				.setVerificationValue("000");
+		invalidExpirationDateCreditCard = new CreditCard()
+				.setNumber("4007000000027").setType(CreditCardType.VISA)
+				.setFirstName("John").setLastName("Doe").setMonth(12)
+				.setYear(1990).setVerificationValue("000");
+		incorrectNumberCreditCard = new CreditCard().setNumber("4007000000028")
+				.setType(CreditCardType.VISA).setFirstName("John")
+				.setLastName("Doe").setMonth(12).setYear(2015)
+				.setVerificationValue("000");
+		incorrectVerificationCodeCreditCard = new CreditCard()
+				.setNumber("4007000000027").setType(CreditCardType.VISA)
+				.setFirstName("John").setLastName("Doe").setMonth(12)
+				.setYear(2015).setVerificationValue("001");
 		expiredCreditCard = new CreditCard().setNumber("4007000000027")
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2009)

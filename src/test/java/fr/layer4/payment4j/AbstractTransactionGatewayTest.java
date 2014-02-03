@@ -2,12 +2,23 @@ package fr.layer4.payment4j;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+import org.apache.commons.lang.NotImplementedException;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class AbstractTransactionGatewayTest {
+@RunWith(JUnitParamsRunner.class)
+public abstract class AbstractTransactionGatewayTest {
 
 	protected Gateway gateway;
 
@@ -19,6 +30,14 @@ public class AbstractTransactionGatewayTest {
 
 	protected CreditCard invalidNumberCreditCard;
 
+	protected CreditCard invalidExpirationDateCreditCard;
+
+	protected CreditCard incorrectNumberCreditCard;
+
+	protected CreditCard incorrectVerificationCodeCreditCard;
+
+	protected CreditCard invalidVerificationCodeCreditCard;
+
 	protected CreditCard expiredCreditCard;
 
 	protected Money money = Money.of(CurrencyUnit.EUR, 10);
@@ -29,9 +48,27 @@ public class AbstractTransactionGatewayTest {
 		assertNotNull("invalidCredentialsTransactionGateway is null",
 				invalidCredentialsTransactionGateway);
 		assertNotNull("validCreditCard is null", validCreditCard);
-		assertNotNull("invalidCreditCard is null", invalidNumberCreditCard);
+		assertNotNull("invalidNumberCreditCard is null",
+				invalidNumberCreditCard);
+		assertNotNull("invalidExpirationDateCreditCard is null",
+				invalidExpirationDateCreditCard);
+		assertNotNull("incorrectNumberCreditCard is null",
+				incorrectNumberCreditCard);
+		assertNotNull("incorrectVerificationCodeCreditCard is null",
+				incorrectVerificationCodeCreditCard);
+		assertNotNull("invalidVerificationCodeCreditCard is null",
+				invalidVerificationCodeCreditCard);
 		assertNotNull("expiredCreditCard is null", expiredCreditCard);
 		assertNotNull("money is null", money);
+	}
+
+	public abstract void data();
+
+	public abstract void init();
+
+	@Before
+	public void before() {
+		init();
 	}
 
 	@Test
@@ -39,144 +76,136 @@ public class AbstractTransactionGatewayTest {
 		assertTrue(gateway.isTransactionCapable());
 	}
 
-	@Test
-	public void testSuccessfullPurchase_validCard() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		Result result = transactionGateway.purchase(money, validCreditCard);
-		System.out.println(result.getMessage());
-
-		// Assert
-		assertTrue(result.isSuccess());
-
-	}
-
-	@Test(expected = IncorrectCreditCardNumberException.class)
-	public void testUnsuccessFullPurchase_invalidCard() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		transactionGateway.purchase(money, invalidNumberCreditCard);
-
-		// Assert
-
-	}
-
-	@Test(expected = AuthenticationException.class)
-	public void testUnsuccessFullPurchase_invalidCredentials() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		invalidCredentialsTransactionGateway.purchase(money, validCreditCard);
-
-		// Assert
-
-	}
-
-	@Test(expected = ExpiredCreditCardException.class)
-	public void testUnsuccessfullPurchase_expiredCard() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		transactionGateway.purchase(money, expiredCreditCard);
-
-		// Assert
-
-	}
-
-	@Test(expected = UnknownTransactionException.class)
-	public void testUnsuccessCancel_unknownTransaction() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		transactionGateway.cancel("00000");
-
-		// Assert
-
-	}
-
-	@Test(expected = ExpiredCreditCardException.class)
-	public void testUnsuccessCancel_expiredCard() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		transactionGateway.authorize(money, expiredCreditCard);
-
-		// Assert
-
+	protected List<Object[]> parametersForPurchase() {
+		return commons();
 	}
 
 	@Test
-	public void testSuccessCancel_validCard() {
+	@Parameters
+	public void purchase(String name, CreditCard creditCard,
+			Class<? extends Exception> expectedExceptionClass) {
 
 		// Arrange
-		prepare();
+		// prepare();
 
 		// Actions
-		Authorization authorization = transactionGateway.authorize(money,
-				validCreditCard);
-		// gateway.capture(authorization);
-		assertNotNull(authorization.getTransactionId());
-		Result result = transactionGateway.cancel(authorization
-				.getTransactionId());
-		System.out.println(result.getMessage());
+		try {
+			Result result = transactionGateway.purchase(money, creditCard);
+			System.out.println(result.getMessage());
 
-		// Assert
-		assertTrue(result.isSuccess());
+			// Assert
+			if (expectedExceptionClass != null) {
+				fail("expected " + expectedExceptionClass.getCanonicalName());
+			}
+			assertTrue(result.isSuccess());
 
+		} catch (Exception e) {
+			catchException(expectedExceptionClass, e);
+		}
+	}
+
+	protected List<Object[]> parametersForCredit() {
+		return commons();
 	}
 
 	@Test
-	public void testSuccessCredit_validCard() {
+	@Parameters
+	public void credit(String name, CreditCard creditCard,
+			Class<? extends Exception> expectedExceptionClass) {
 
 		// Arrange
-		prepare();
+		// prepare();
 
 		// Actions
-		Result result = transactionGateway.credit(money, validCreditCard);
-		System.out.println(result.getMessage());
+		try {
+			Result result = transactionGateway.credit(money, creditCard);
+			System.out.println(result.getMessage());
 
-		// Assert
-		assertTrue(result.isSuccess());
+			// Assert
+			if (expectedExceptionClass != null) {
+				fail("expected " + expectedExceptionClass.getCanonicalName());
+			}
+			assertTrue(result.isSuccess());
 
+		} catch (Exception e) {
+			catchException(expectedExceptionClass, e);
+		}
 	}
 
-	@Test(expected = IncorrectCreditCardNumberException.class)
-	public void testUnsuccessfCredit_invalidCard() {
-
-		// Arrange
-		prepare();
-
-		// Actions
-		transactionGateway.credit(money, invalidNumberCreditCard);
-
-		// Assert
-
+	protected List<Object[]> parametersForCancel() {
+		return commons();
 	}
 
-	@Test(expected = ExpiredCreditCardException.class)
-	public void testUnsuccessCredit_expiredCard() {
+	@Test
+	@Parameters
+	public void cancel(String name, CreditCard creditCard,
+			Class<? extends Exception> expectedExceptionClass) {
 
 		// Arrange
-		prepare();
+		// prepare();
 
 		// Actions
-		transactionGateway.credit(money, expiredCreditCard);
+		try {
+			Result purchaseResult = transactionGateway.purchase(money,
+					creditCard);
+			Result result = transactionGateway.cancel(purchaseResult
+					.getAuthorization());
+			System.out.println(result.getMessage());
 
-		// Assert
+			// Assert
+			if (expectedExceptionClass != null) {
+				fail("expected " + expectedExceptionClass.getCanonicalName());
+			}
+			assertTrue(result.isSuccess());
 
+		} catch (Exception e) {
+			catchException(expectedExceptionClass, e);
+		}
+	}
+
+	public void catchException(
+			Class<? extends Exception> expectedExceptionClass, Exception e) {
+		if (e instanceof NotImplementedException) {
+			throw (NotImplementedException) e;
+		}
+		if (expectedExceptionClass != null) {
+			if (!e.getClass().getCanonicalName()
+					.equals(expectedExceptionClass.getCanonicalName())) {
+				fail("expected a " + expectedExceptionClass.getCanonicalName()
+						+ " get a " + e.getClass().getCanonicalName() + ": "
+						+ e.getMessage());
+			} else {
+				// Nice!
+			}
+		} else {
+			fail("get a " + e.getClass().getCanonicalName() + ": "
+					+ e.getMessage());
+		}
+	}
+
+	private List<Object[]> commons() {
+		data();
+		List<Object[]> list = new ArrayList<Object[]>();
+		list.add(new Object[] { "a valid card", validCreditCard, null });
+		list.add(new Object[] { "an invalid number credit card",
+				invalidNumberCreditCard, InvalidCreditCardNumberException.class });
+		list.add(new Object[] { "an incorrect number credit card",
+				incorrectNumberCreditCard,
+				IncorrectCreditCardNumberException.class });
+		list.add(new Object[] { "an expired credit card", expiredCreditCard,
+				ExpiredCreditCardException.class });
+		list.add(new Object[] {
+				"a credit card with an invalid verification code",
+				invalidVerificationCodeCreditCard,
+				InvalidVerificationCodeException.class });
+		list.add(new Object[] {
+				"a credit card with an incorrect verification code",
+				incorrectVerificationCodeCreditCard,
+				IncorrectVerificationCodeException.class });
+		list.add(new Object[] {
+				"a credit card with an invalid verification code",
+				invalidVerificationCodeCreditCard,
+				InvalidVerificationCodeException.class });
+		return list;
 	}
 }

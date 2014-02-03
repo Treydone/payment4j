@@ -2,6 +2,8 @@ package fr.layer4.payment4j.gateways.webpay;
 
 import java.math.BigDecimal;
 
+import junitparams.Parameters;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -17,17 +19,9 @@ public class WebPayTransactionGatewayTest extends
 		AbstractTransactionGatewayTest {
 
 	@Before
-	public void init() {
+	public void data() {
 
 		money = Money.of(CurrencyUnit.JPY, BigDecimal.valueOf(10000));
-
-		WebPayGateway gateway = WebPayGateway.build(true,
-				Configuration.get("webpay.apiKey"));
-		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
-
-		invalidCredentialsTransactionGateway = WebPayGateway.build(true, "6z")
-				.transactionGateway();
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002
@@ -51,18 +45,21 @@ public class WebPayTransactionGatewayTest extends
 				.setVerificationValue("000");
 	}
 
-	@Test(expected = NotImplementedException.class)
-	public void testSuccessCredit_validCard() {
-		super.testSuccessCredit_validCard();
+	public void init() {
+		WebPayGateway gateway = WebPayGateway.build(true,
+				Configuration.get("webpay.apiKey"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
+
+		invalidCredentialsTransactionGateway = WebPayGateway.build(true, "6z")
+				.transactionGateway();
 	}
 
+	@Override
 	@Test(expected = NotImplementedException.class)
-	public void testUnsuccessfCredit_invalidCard() {
-		super.testUnsuccessfCredit_invalidCard();
-	}
-
-	@Test(expected = NotImplementedException.class)
-	public void testUnsuccessCredit_expiredCard() {
-		super.testUnsuccessCredit_expiredCard();
+	@Parameters
+	public void credit(String name, CreditCard creditCard,
+			Class<? extends Exception> expectedExceptionClass) {
+		super.credit(name, creditCard, expectedExceptionClass);
 	}
 }

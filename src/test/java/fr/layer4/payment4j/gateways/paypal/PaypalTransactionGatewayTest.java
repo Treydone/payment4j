@@ -11,19 +11,7 @@ public class PaypalTransactionGatewayTest extends
 		AbstractTransactionGatewayTest {
 
 	@Before
-	public void init() {
-		PaypalGateway gateway = PaypalGateway.build(true,
-				Configuration.get("paypal.user"),
-				Configuration.get("paypal.vendor"),
-				Configuration.get("paypal.partner"),
-				Configuration.get("paypal.password"));
-		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
-
-		invalidCredentialsTransactionGateway = PaypalGateway.build(true, null,
-				"vincent.devillers-facilitator_api1.layer4.fr", null, "222")
-				.transactionGateway();
-
+	public void data() {
 		validCreditCard = new CreditCard().setNumber("4963204821164667")
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2019)
@@ -36,5 +24,19 @@ public class PaypalTransactionGatewayTest extends
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2015)
 				.setVerificationValue("000");
+	}
+
+	public void init() {
+		PaypalGateway gateway = PaypalGateway.build(true,
+				Configuration.get("paypal.user"),
+				Configuration.get("paypal.vendor"),
+				Configuration.get("paypal.partner"),
+				Configuration.get("paypal.password"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
+
+		invalidCredentialsTransactionGateway = PaypalGateway.build(true, null,
+				"vincent.devillers-facilitator_api1.layer4.fr", null, "222")
+				.transactionGateway();
 	}
 }
