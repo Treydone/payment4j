@@ -6,16 +6,13 @@ import paypal.payflow.AuthorizationTransaction;
 import paypal.payflow.BillTo;
 import paypal.payflow.CaptureTransaction;
 import paypal.payflow.CardTender;
-import paypal.payflow.Context;
 import paypal.payflow.CreditTransaction;
 import paypal.payflow.Currency;
-import paypal.payflow.FraudResponse;
 import paypal.payflow.Invoice;
 import paypal.payflow.PayflowConnectionData;
 import paypal.payflow.PayflowUtility;
 import paypal.payflow.Response;
 import paypal.payflow.ShipTo;
-import paypal.payflow.TransactionResponse;
 import paypal.payflow.UserInfo;
 import paypal.payflow.VoidTransaction;
 import fr.layer4.payment4j.Address;
@@ -92,7 +89,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
 
-		Result result = extractResult(resp);
+		Result result = PaypalUtils.extractResult(resp);
 		return result;
 	}
 
@@ -120,7 +117,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
 
-		Result result = extractResult(resp);
+		Result result = PaypalUtils.extractResult(resp);
 		return result;
 	}
 
@@ -184,7 +181,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 		Response resp = trans.submitTransaction();
 
 		Authorization authorization = new Authorization();
-		Result result = extractResult(resp);
+		Result result = PaypalUtils.extractResult(resp);
 		authorization.setTransactionId(result.getAuthorization());
 
 		return authorization;
@@ -202,7 +199,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
 
-		Result result = extractResult(resp);
+		Result result = PaypalUtils.extractResult(resp);
 		return result;
 	}
 
@@ -233,49 +230,8 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
 
-		Result result = extractResult(resp);
+		Result result = PaypalUtils.extractResult(resp);
 		return result;
 	}
 
-	protected Result extractResult(Response resp) {
-		Result result = new Result();
-
-		// Get the Transaction Response parameters.
-		TransactionResponse trxnResponse = resp.getTransactionResponse();
-
-		if (trxnResponse != null) {
-			result.setResponseCode(Integer.toString(trxnResponse.getResult()));
-			result.setMessage(trxnResponse.getRespMsg());
-			result.setAuthorization(trxnResponse.getPnref());
-			System.out.println("RESULT = " + trxnResponse.getResult());
-			System.out.println("PNREF = " + trxnResponse.getPnref());
-			System.out.println("RESPMSG = " + trxnResponse.getRespMsg());
-			System.out.println("AUTHCODE = " + trxnResponse.getAuthCode());
-			System.out.println("AVSADDR = " + trxnResponse.getAvsAddr());
-			System.out.println("AVSZIP = " + trxnResponse.getAvsZip());
-			System.out.println("IAVS = " + trxnResponse.getIavs());
-			// If value is true, then the Request ID has not been changed
-			// and the original response
-			// of the original transction is returned.
-			System.out.println("DUPLICATE = " + trxnResponse.getDuplicate());
-		}
-
-		// Get the Fraud Response parameters.
-		FraudResponse fraudResp = resp.getFraudResponse();
-		if (fraudResp != null) {
-			System.out.println("PREFPSMSG = " + fraudResp.getPreFpsMsg());
-			System.out.println("POSTFPSMSG = " + fraudResp.getPostFpsMsg());
-		}
-
-		// Display the response.
-		System.out.println("\n" + PayflowUtility.getStatus(resp));
-
-		// Get the Transaction Context and check for any contained SDK
-		// specific errors (optional code).
-		Context transCtx = resp.getContext();
-		if (transCtx != null && transCtx.getErrorCount() > 0) {
-			System.out.println("\nTransaction Errors = " + transCtx.toString());
-		}
-		return result;
-	}
 }

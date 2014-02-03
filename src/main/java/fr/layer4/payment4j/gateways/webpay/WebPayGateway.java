@@ -9,22 +9,31 @@ import org.joda.money.CurrencyUnit;
 import com.google.common.collect.Sets;
 
 import fr.layer4.payment4j.CreditCardType;
+import fr.layer4.payment4j.RecurringCapable;
+import fr.layer4.payment4j.RecurringGateway;
 import fr.layer4.payment4j.TransactionCapable;
 import fr.layer4.payment4j.TransactionGateway;
 import fr.layer4.payment4j.gateways.AbstractGateway;
 
 public class WebPayGateway extends AbstractGateway implements
-		TransactionCapable {
+		TransactionCapable, RecurringCapable {
 
 	private TransactionGateway transactionGateway;
 
+	private RecurringGateway recurringGateway;
+
 	private WebPayGateway(boolean testingMode, String apiKey) {
 		transactionGateway = new WebPayTransactionGateway(this, apiKey);
+		recurringGateway = new WebPayRecurringGateway(this, apiKey);
 		setExceptionResolver(new WebPayExceptionResolver());
 	}
 
 	public TransactionGateway transactionGateway() {
 		return transactionGateway;
+	}
+
+	public RecurringGateway recurringGateway() {
+		return recurringGateway;
 	}
 
 	public static WebPayGateway build(boolean testingMode, String apiKey) {
