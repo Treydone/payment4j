@@ -6,9 +6,9 @@ import org.apache.commons.lang.NotImplementedException;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
+import fr.layer4.payment4j.gateways.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.gateways.Configuration;
 
 public class StripeTransactionGatewayTest extends

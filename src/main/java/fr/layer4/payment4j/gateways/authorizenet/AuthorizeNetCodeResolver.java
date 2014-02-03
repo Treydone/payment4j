@@ -30,6 +30,8 @@ public class AuthorizeNetCodeResolver implements ResponseCodeResolver {
 		} else if ("RRC_3_40".equals(code)) {
 			throw new TransactionException(transactionId,
 					"This transaction must be encrypted");
+		} else if ("RRC_3_78".equals(code)) {
+			throw new InvalidVerificationCodeException(creditCard);
 		} else if (!"RRC_1_1".equals(code)) {
 			throw new PaymentException(message);
 		}

@@ -2,9 +2,9 @@ package fr.layer4.payment4j.gateways.paypal;
 
 import org.junit.Before;
 
-import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
+import fr.layer4.payment4j.gateways.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.gateways.Configuration;
 
 public class PaypalTransactionGatewayTest extends

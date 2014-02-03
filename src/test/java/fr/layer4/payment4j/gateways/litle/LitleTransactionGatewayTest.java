@@ -1,8 +1,8 @@
 package fr.layer4.payment4j.gateways.litle;
 
-import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
+import fr.layer4.payment4j.gateways.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.gateways.Configuration;
 
 public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest {

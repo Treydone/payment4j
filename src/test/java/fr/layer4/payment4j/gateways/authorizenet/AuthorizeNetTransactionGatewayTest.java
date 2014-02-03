@@ -1,8 +1,8 @@
 package fr.layer4.payment4j.gateways.authorizenet;
 
-import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
+import fr.layer4.payment4j.gateways.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.gateways.Configuration;
 
 public class AuthorizeNetTransactionGatewayTest extends
@@ -55,5 +55,9 @@ public class AuthorizeNetTransactionGatewayTest extends
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2015)
 				.setVerificationValue("000");
+		invalidVerificationCodeCreditCard = new CreditCard()
+				.setNumber("4007000000027").setType(CreditCardType.VISA)
+				.setFirstName("John").setLastName("Doe").setMonth(12)
+				.setYear(2015).setVerificationValue("00");
 	}
 }

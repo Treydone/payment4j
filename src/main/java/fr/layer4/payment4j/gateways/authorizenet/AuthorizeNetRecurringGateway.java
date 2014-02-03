@@ -30,7 +30,7 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected void doRecurring(Money money, CreditCard creditCard,
+	protected String doRecurring(Money money, CreditCard creditCard,
 			Schedule schedule) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
@@ -74,7 +74,8 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 		subscription.setCustomer(customer);
 		subscription.setAmount(new BigDecimal(6.00));
 		subscription.setTrialAmount(Transaction.ZERO_AMOUNT);
-		subscription.setRefId("REF:" + System.currentTimeMillis());
+		String ref = "REF" + System.currentTimeMillis();
+		subscription.setRefId(ref);
 		subscription.setName("Subscription " + System.currentTimeMillis());
 
 		net.authorize.arb.Transaction transaction = merchant
@@ -95,5 +96,34 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 					+ " - " + message.getText() + "<br/>");
 		}
 
+		return ref;
+	}
+
+	@Override
+	protected void doCancel(String recurringReference) {
+
+		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
+				transactionKey);
+
+		Subscription subscription = Subscription.createSubscription();
+		subscription.setRefId(recurringReference);
+
+		net.authorize.arb.Transaction transaction = merchant
+				.createARBTransaction(
+						net.authorize.arb.TransactionType.CANCEL_SUBSCRIPTION,
+						subscription);
+		net.authorize.arb.Result<Transaction> result = (net.authorize.arb.Result<Transaction>) merchant
+				.postTransaction(transaction);
+
+		System.out.println("Result Code: "
+				+ (result.getResultCode() != null ? result.getResultCode()
+						: "No result code") + "<br/>");
+		System.out.println("Result Subscription Id: "
+				+ result.getResultSubscriptionId() + "<br/>");
+		for (int i = 0; i < result.getMessages().size(); i++) {
+			Message message = (Message) result.getMessages().get(i);
+			System.out.println("Message code/text: " + message.getCode()
+					+ " - " + message.getText() + "<br/>");
+		}
 	}
 }

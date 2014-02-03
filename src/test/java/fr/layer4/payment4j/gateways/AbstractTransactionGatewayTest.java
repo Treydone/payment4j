@@ -1,4 +1,4 @@
-package fr.layer4.payment4j;
+package fr.layer4.payment4j.gateways;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -16,6 +16,16 @@ import org.joda.money.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import fr.layer4.payment4j.CreditCard;
+import fr.layer4.payment4j.ExpiredCreditCardException;
+import fr.layer4.payment4j.Gateway;
+import fr.layer4.payment4j.IncorrectCreditCardNumberException;
+import fr.layer4.payment4j.IncorrectVerificationCodeException;
+import fr.layer4.payment4j.InvalidCreditCardNumberException;
+import fr.layer4.payment4j.InvalidVerificationCodeException;
+import fr.layer4.payment4j.Result;
+import fr.layer4.payment4j.TransactionGateway;
 
 @RunWith(JUnitParamsRunner.class)
 public abstract class AbstractTransactionGatewayTest {

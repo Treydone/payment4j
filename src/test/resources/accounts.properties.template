@@ -22,4 +22,8 @@ authorizenet.apiLoginId=
 authorizenet.transactionKey=	
 
 # WebPay
-webpay.apiKey=		
+webpay.apiKey=	
+
+# App55
+app55.apiKey=
+app55.apiSecret=		

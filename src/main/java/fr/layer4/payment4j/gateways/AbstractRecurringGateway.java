@@ -19,7 +19,7 @@ public abstract class AbstractRecurringGateway implements RecurringGateway {
 		this.gateway = gateway;
 	}
 
-	public void recurring(Money money, CreditCard creditCard, Schedule schedule) {
+	public String recurring(Money money, CreditCard creditCard, Schedule schedule) {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The credit card can not be null",
 				creditCard);
@@ -30,7 +30,7 @@ public abstract class AbstractRecurringGateway implements RecurringGateway {
 		}
 
 		try {
-			doRecurring(money, creditCard, schedule);
+			return doRecurring(money, creditCard, schedule);
 		} catch (Throwable throwable) {
 			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
 					throwable);
@@ -39,7 +39,21 @@ public abstract class AbstractRecurringGateway implements RecurringGateway {
 		// transactions.getResult(), null, null);
 	}
 
-	protected abstract void doRecurring(Money money, CreditCard creditCard,
+	protected abstract String doRecurring(Money money, CreditCard creditCard,
 			Schedule schedule);
+
+	public void cancel(String recurringReference) {
+		Preconditions.checkNotNull("The amount can not be null",
+				recurringReference);
+
+		try {
+			doCancel(recurringReference);
+		} catch (Throwable throwable) {
+			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
+					throwable);
+		}
+	}
+
+	protected abstract void doCancel(String recurringReference);
 
 }

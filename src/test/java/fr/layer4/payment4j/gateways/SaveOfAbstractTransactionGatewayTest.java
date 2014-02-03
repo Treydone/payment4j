@@ -1,4 +1,4 @@
-package fr.layer4.payment4j;
+package fr.layer4.payment4j.gateways;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -6,6 +6,16 @@ import static org.junit.Assert.assertTrue;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
+
+import fr.layer4.payment4j.AuthenticationException;
+import fr.layer4.payment4j.Authorization;
+import fr.layer4.payment4j.CreditCard;
+import fr.layer4.payment4j.ExpiredCreditCardException;
+import fr.layer4.payment4j.Gateway;
+import fr.layer4.payment4j.InvalidCreditCardNumberException;
+import fr.layer4.payment4j.Result;
+import fr.layer4.payment4j.TransactionGateway;
+import fr.layer4.payment4j.UnknownTransactionException;
 
 public class SaveOfAbstractTransactionGatewayTest {
 
