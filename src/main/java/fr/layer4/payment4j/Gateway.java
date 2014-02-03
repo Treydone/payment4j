@@ -22,4 +22,12 @@ public interface Gateway {
 
 	Set<String> getSupportedCountries();
 
+	boolean isTransactionCapable();
+
+	boolean isRecurringCapable();
+
+	boolean isHistoryCapable();
+
+	boolean isCreditCardStoreCapable();
+
 }

@@ -12,12 +12,15 @@ public class PaypalTransactionGatewayTest extends
 
 	@Before
 	public void init() {
-		gateway = PaypalGateway.build(true, Configuration.get("paypal.user"),
+		PaypalGateway gateway = PaypalGateway.build(true,
+				Configuration.get("paypal.user"),
 				Configuration.get("paypal.vendor"),
 				Configuration.get("paypal.partner"),
-				Configuration.get("paypal.password")).transactionGateway();
+				Configuration.get("paypal.password"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
 
-		invalidCredentialsGateway = PaypalGateway.build(true, null,
+		invalidCredentialsTransactionGateway = PaypalGateway.build(true, null,
 				"vincent.devillers-facilitator_api1.layer4.fr", null, "222")
 				.transactionGateway();
 

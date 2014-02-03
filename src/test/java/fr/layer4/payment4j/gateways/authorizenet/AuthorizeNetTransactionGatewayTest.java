@@ -12,13 +12,14 @@ public class AuthorizeNetTransactionGatewayTest extends
 
 	@Before
 	public void init() {
-		gateway = AuthorizeNetGateway.build(true,
+		AuthorizeNetGateway gateway = AuthorizeNetGateway.build(true,
 				Configuration.get("authorizenet.apiLoginId"),
-				Configuration.get("authorizenet.transactionKey"))
-				.transactionGateway();
+				Configuration.get("authorizenet.transactionKey"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
 
-		invalidCredentialsGateway = AuthorizeNetGateway.build(true, "6", "64")
-				.transactionGateway();
+		invalidCredentialsTransactionGateway = AuthorizeNetGateway.build(true,
+				"6", "64").transactionGateway();
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002

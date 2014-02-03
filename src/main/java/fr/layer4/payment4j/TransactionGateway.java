@@ -4,6 +4,10 @@ import org.joda.money.Money;
 
 public interface TransactionGateway {
 
+	Result credit(Money money, CreditCard creditcard);
+
+	Result credit(Money money, CreditCard creditcard, Address billingAddress);
+
 	Result purchase(Money money, CreditCard creditcard, Order order);
 
 	Result purchase(Money money, CreditCard creditcard);

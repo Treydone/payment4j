@@ -40,6 +40,24 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		this.transactionKey = transactionKey;
 	}
 
+	@Override
+	public Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress) {
+
+		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
+				transactionKey);
+
+		// create transaction
+		Transaction creditTransaction = merchant.createAIMTransaction(
+				TransactionType.CREDIT, money.getAmount());
+		creditTransaction.setCreditCard(convertCreditCard(creditcard));
+
+		net.authorize.aim.Result authorizeNetResult = (net.authorize.aim.Result) merchant
+				.postTransaction(creditTransaction);
+		Result result = convertResult(authorizeNetResult);
+		return result;
+	}
+
 	public Authorization doAuthorize(Money money, CreditCard creditcard,
 			Order order) {
 

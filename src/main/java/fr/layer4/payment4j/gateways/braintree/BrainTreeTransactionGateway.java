@@ -38,6 +38,54 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 		this.privateKey = privateKey;
 	}
 
+	public Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress) {
+
+		TransactionRequest request = new TransactionRequest()
+				.amount(money.getAmount())
+				// TODO
+				// .deviceData(deviceData)
+				.creditCard()
+				.number(creditcard.getNumber())
+				.expirationMonth(Integer.toString(creditcard.getMonth()))
+				.expirationYear(Integer.toString(creditcard.getYear()))
+				.cardholderName(
+						creditcard.getFirstName() + " "
+								+ creditcard.getLastName())
+				.cvv(creditcard.getVerificationValue()).done();
+
+		BraintreeGateway gateway = getGateway();
+
+		com.braintreegateway.Result<Transaction> brainTreeResult = gateway
+				.transaction().credit(request);
+
+		Result result = new Result();
+		result.setSuccess(false);
+		if (brainTreeResult.isSuccess()) {
+			result.setSuccess(true);
+			Transaction transaction = brainTreeResult.getTarget();
+			System.out.println("Success!: " + transaction.getId());
+		} else if (brainTreeResult.getTransaction() != null) {
+			System.out.println("Message: " + brainTreeResult.getMessage());
+			Transaction transaction = brainTreeResult.getTransaction();
+			System.out.println("Error processing transaction:");
+			System.out.println("  Status: " + transaction.getStatus());
+			System.out.println("  Code: "
+					+ transaction.getProcessorResponseCode());
+			System.out.println("  Text: "
+					+ transaction.getProcessorResponseText());
+		} else {
+			System.out.println("Message: " + brainTreeResult.getMessage());
+			for (ValidationError error : brainTreeResult.getErrors()
+					.getAllDeepValidationErrors()) {
+				System.out.println("Attribute: " + error.getAttribute());
+				System.out.println("  Code: " + error.getCode());
+				System.out.println("  Message: " + error.getMessage());
+			}
+		}
+		return result;
+	}
+
 	public Authorization doAuthorize(Money money, CreditCard creditcard,
 			Order order) {
 
@@ -66,15 +114,18 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 
 		BraintreeGateway gateway = getGateway();
 
-		com.braintreegateway.Result<Transaction> result = gateway.transaction()
-				.sale(request);
+		com.braintreegateway.Result<Transaction> brainTreeResult = gateway
+				.transaction().sale(request);
 
-		if (result.isSuccess()) {
-			Transaction transaction = result.getTarget();
+		Result result = new Result();
+		result.setSuccess(false);
+		if (brainTreeResult.isSuccess()) {
+			result.setSuccess(true);
+			Transaction transaction = brainTreeResult.getTarget();
 			System.out.println("Success!: " + transaction.getId());
-		} else if (result.getTransaction() != null) {
-			System.out.println("Message: " + result.getMessage());
-			Transaction transaction = result.getTransaction();
+		} else if (brainTreeResult.getTransaction() != null) {
+			System.out.println("Message: " + brainTreeResult.getMessage());
+			Transaction transaction = brainTreeResult.getTransaction();
 			System.out.println("Error processing transaction:");
 			System.out.println("  Status: " + transaction.getStatus());
 			System.out.println("  Code: "
@@ -82,15 +133,14 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 			System.out.println("  Text: "
 					+ transaction.getProcessorResponseText());
 		} else {
-			System.out.println("Message: " + result.getMessage());
-			for (ValidationError error : result.getErrors()
+			System.out.println("Message: " + brainTreeResult.getMessage());
+			for (ValidationError error : brainTreeResult.getErrors()
 					.getAllDeepValidationErrors()) {
 				System.out.println("Attribute: " + error.getAttribute());
 				System.out.println("  Code: " + error.getCode());
 				System.out.println("  Message: " + error.getMessage());
 			}
 		}
-
 		Authorization authorization = new Authorization();
 		return authorization;
 	}

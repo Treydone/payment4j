@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.joda.money.Money;
 
 import com.google.common.base.Throwables;
@@ -26,6 +27,12 @@ public class StripeTransactionGateway extends AbstractTransactionGateway {
 	public StripeTransactionGateway(Gateway gateway, String apiKey) {
 		super(gateway);
 		this.apiKey = apiKey;
+	}
+
+	@Override
+	public Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress) {
+		throw new NotImplementedException();
 	}
 
 	@Override

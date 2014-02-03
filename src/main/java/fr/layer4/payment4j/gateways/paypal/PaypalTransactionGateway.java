@@ -43,6 +43,60 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
+	public Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress) {
+		UserInfo info = new UserInfo(user, vendor, partner, password);
+		PayflowConnectionData connection = new PayflowConnectionData();
+
+		// Create a new Invoice data object with the Amount, Billing Address
+		// etc. details.
+		Invoice inv = new Invoice();
+
+		// Set Amount.
+		Currency amt = new Currency(money.getAmount().doubleValue());
+		inv.setAmt(amt);
+		inv.setPoNum("PO12345");
+		inv.setInvNum("INV12345");
+
+		// Set the Billing Address details.
+		if (billingAddress != null) {
+			BillTo bill = new BillTo();
+			bill.setStreet(billingAddress.getStreetAddress());
+			bill.setZip(billingAddress.getPostalCode());
+			bill.setCity(billingAddress.getCity());
+			bill.setCompanyName(billingAddress.getCompany());
+			bill.setFirstName(billingAddress.getFirstName());
+			bill.setLastName(billingAddress.getLastName());
+			bill.setBillToCountry(billingAddress.getCountry());
+			bill.setState(billingAddress.getState());
+			inv.setBillTo(bill);
+		}
+
+		// Create a new Payment Device - Credit Card data object.
+		// The input parameters are Credit Card No. and Expiry Date for the
+		// Credit Card.
+		paypal.payflow.CreditCard cc = new paypal.payflow.CreditCard(
+				creditcard.getNumber(),
+				creditcard.getExpirationAsForCharacter());
+		cc.setCvv2(creditcard.getVerificationValue());
+
+		// Create a new Tender - Card Tender data object.
+		CardTender card = new CardTender(cc);
+		// /////////////////////////////////////////////////////////////////
+
+		// Create a new Credit Transaction.
+		// Following is an example of a independent credit type of transaction.
+		CreditTransaction trans = new CreditTransaction(info, connection, inv,
+				card, PayflowUtility.getRequestId());
+
+		// Submit the Transaction
+		Response resp = trans.submitTransaction();
+
+		Result result = extractResult(resp);
+		return result;
+	}
+
+	@Override
 	protected Result doCapture(Authorization authorization) {
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();

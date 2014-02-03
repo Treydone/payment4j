@@ -33,6 +33,20 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		this.properties = properties;
 	}
 
+	public Result doCredit(Money money, CreditCard creditcard, Address billingAddress) {
+
+		Credit credit = new Credit();
+		CardType card = convertCreditcard(creditcard);
+		credit.setCard(card);
+
+		credit.setAmount(money.getAmount().longValue());
+		credit.setOrderSource(OrderSourceType.ECOMMERCE);
+
+		CreditResponse response = getLitle().credit(credit);
+
+		return null;
+	}
+
 	public Authorization doAuthorize(Money money, CreditCard creditcard,
 			Order order) {
 		com.litle.sdk.generate.Authorization auth = new com.litle.sdk.generate.Authorization();
@@ -51,6 +65,28 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 			}
 		}
 
+		CardType card = convertCreditcard(creditcard);
+		auth.setCard(card);
+
+		AuthorizationResponse response = getLitle().authorize(auth);
+		// Display Results
+		System.out.println("Response: " + response.getResponse());
+		System.out.println("Message: " + response.getMessage());
+		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
+
+		Authorization authorization = new Authorization();
+		authorization
+				.setTransactionId(String.valueOf(response.getLitleTxnId()));
+		authorization.setUnderlyingAuthorization(response);
+
+		Result result = new Result();
+		result.setSuccess("Approved".equals(response.getMessage()));
+		result.setMessage(response.getMessage());
+
+		return authorization;
+	}
+
+	private CardType convertCreditcard(CreditCard creditcard) {
 		CardType card = new CardType();
 		card.setNumber(creditcard.getNumber());
 		card.setExpDate(creditcard.getExpirationAsForCharacter());
@@ -79,24 +115,7 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		default:
 			card.setType(MethodOfPaymentTypeEnum.VI);
 		}
-		auth.setCard(card);
-
-		AuthorizationResponse response = getLitle().authorize(auth);
-		// Display Results
-		System.out.println("Response: " + response.getResponse());
-		System.out.println("Message: " + response.getMessage());
-		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
-
-		Authorization authorization = new Authorization();
-		authorization
-				.setTransactionId(String.valueOf(response.getLitleTxnId()));
-		authorization.setUnderlyingAuthorization(response);
-
-		Result result = new Result();
-		result.setSuccess("Approved".equals(response.getMessage()));
-		result.setMessage(response.getMessage());
-
-		return authorization;
+		return card;
 	}
 
 	private LitleOnline getLitle() {

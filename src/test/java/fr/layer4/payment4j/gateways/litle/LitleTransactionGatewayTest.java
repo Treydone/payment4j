@@ -11,12 +11,15 @@ public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest 
 
 	@Before
 	public void init() {
-		gateway = LitleGateway.build(true, Configuration.get("litle.username"),
+		LitleGateway gateway = LitleGateway.build(true,
+				Configuration.get("litle.username"),
 				Configuration.get("litle.password"),
-				Configuration.get("litle.merchantId")).transactionGateway();
+				Configuration.get("litle.merchantId"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
 
-		invalidCredentialsGateway = LitleGateway.build(true, "6z", "64w",
-				"test").transactionGateway();
+		invalidCredentialsTransactionGateway = LitleGateway.build(true, "6z",
+				"64w", "test").transactionGateway();
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002

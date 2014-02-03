@@ -1,6 +1,8 @@
 package fr.layer4.payment4j.gateways.stripe;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.junit.Before;
+import org.junit.Test;
 
 import fr.layer4.payment4j.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.CreditCard;
@@ -12,11 +14,13 @@ public class StripeTransactionGatewayTest extends
 
 	@Before
 	public void init() {
-		gateway = StripeGateway.build(true, Configuration.get("stripe.apiKey"))
-				.transactionGateway();
+		StripeGateway gateway = StripeGateway.build(true,
+				Configuration.get("stripe.apiKey"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
 
-		invalidCredentialsGateway = StripeGateway.build(true, "invalidKey")
-				.transactionGateway();
+		invalidCredentialsTransactionGateway = StripeGateway.build(true,
+				"invalidKey").transactionGateway();
 
 		validCreditCard = new CreditCard().setNumber("4242424242424242")
 				.setType(CreditCardType.VISA).setFirstName("John")
@@ -30,5 +34,20 @@ public class StripeTransactionGatewayTest extends
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2015)
 				.setVerificationValue("000");
+	}
+
+	@Test(expected = NotImplementedException.class)
+	public void testSuccessCredit_validCard() {
+		super.testSuccessCredit_validCard();
+	}
+
+	@Test(expected = NotImplementedException.class)
+	public void testUnsuccessfCredit_invalidCard() {
+		super.testUnsuccessfCredit_invalidCard();
+	}
+
+	@Test(expected = NotImplementedException.class)
+	public void testUnsuccessCredit_expiredCard() {
+		super.testUnsuccessCredit_expiredCard();
 	}
 }

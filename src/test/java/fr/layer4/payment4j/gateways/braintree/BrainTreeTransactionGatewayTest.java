@@ -12,13 +12,15 @@ public class BrainTreeTransactionGatewayTest extends
 
 	@Before
 	public void init() {
-		gateway = BrainTreeGateway.build(true,
+		BrainTreeGateway gateway = BrainTreeGateway.build(true,
 				Configuration.get("braintree.merchantId"),
 				Configuration.get("braintree.publicKey"),
-				Configuration.get("braintree.privateKey")).transactionGateway();
+				Configuration.get("braintree.privateKey"));
+		this.gateway = gateway;
+		transactionGateway = gateway.transactionGateway();
 
-		invalidCredentialsGateway = BrainTreeGateway.build(true, "6z", "64w",
-				"").transactionGateway();
+		invalidCredentialsTransactionGateway = BrainTreeGateway.build(true,
+				"6z", "64w", "").transactionGateway();
 
 		// The expiration date must be set to the present date or later:
 		// American Express Test Card 370000000000002

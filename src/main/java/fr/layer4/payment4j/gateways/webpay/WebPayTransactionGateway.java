@@ -7,8 +7,10 @@ import jp.webpay.model.Charge;
 import jp.webpay.request.CardRequest;
 import jp.webpay.request.ChargeRequest;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.joda.money.Money;
 
+import fr.layer4.payment4j.Address;
 import fr.layer4.payment4j.Authorization;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.Gateway;
@@ -23,6 +25,12 @@ public class WebPayTransactionGateway extends AbstractTransactionGateway {
 	public WebPayTransactionGateway(Gateway gateway, String apiKey) {
 		super(gateway);
 		this.apiKey = apiKey;
+	}
+
+	@Override
+	public Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress) {
+		throw new NotImplementedException();
 	}
 
 	@Override

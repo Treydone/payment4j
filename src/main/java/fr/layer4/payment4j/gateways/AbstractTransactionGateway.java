@@ -4,6 +4,7 @@ import org.joda.money.Money;
 
 import com.google.common.base.Preconditions;
 
+import fr.layer4.payment4j.Address;
 import fr.layer4.payment4j.Authorization;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.Gateway;
@@ -18,6 +19,30 @@ public abstract class AbstractTransactionGateway implements TransactionGateway {
 	public AbstractTransactionGateway(Gateway gateway) {
 		this.gateway = gateway;
 	}
+
+	public Result credit(Money money, CreditCard creditcard,
+			Address billingAddress) {
+		Preconditions.checkNotNull("The amount can not be null", money);
+		Preconditions.checkNotNull("The credit card can not be null",
+				creditcard);
+		Result result = null;
+		try {
+			result = doCredit(money, creditcard, billingAddress);
+		} catch (Throwable throwable) {
+			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
+					throwable);
+		}
+		GatewayUtils.resoleCode(gateway.getResponseCodeResolver(), result,
+				creditcard, null);
+		return result;
+	}
+
+	public Result credit(Money money, CreditCard creditcard) {
+		return credit(money, creditcard, null);
+	}
+
+	public abstract Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress);
 
 	public Result purchase(Money money, CreditCard creditcard) {
 		return purchase(money, creditcard, null);
