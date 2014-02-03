@@ -3,7 +3,6 @@ package fr.layer4.payment4j.gateways.litle;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
 import fr.layer4.payment4j.gateways.AbstractTransactionGatewayTest;
-import fr.layer4.payment4j.gateways.Configuration;
 
 public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest {
 
@@ -32,14 +31,11 @@ public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest 
 	}
 
 	public void init() {
-		LitleGateway gateway = LitleGateway.build(true,
-				Configuration.get("litle.username"),
-				Configuration.get("litle.password"),
-				Configuration.get("litle.merchantId"));
+		LitleGateway gateway = LitleGateway.build();
 		this.gateway = gateway;
 		transactionGateway = gateway.transactionGateway();
 
-		invalidCredentialsTransactionGateway = LitleGateway.build(true, "6z",
-				"64w", "test").transactionGateway();
+		invalidCredentialsTransactionGateway = LitleGateway.build()
+				.transactionGateway();
 	}
 }

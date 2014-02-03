@@ -31,36 +31,43 @@ public class LitleGateway extends AbstractGateway implements TransactionCapable 
 	 * sftpUsername=
 	 */
 	public LitleGateway(boolean testingMode, Properties properties) {
-		Preconditions.checkArgument(
-				StringUtils.isNotBlank(properties.getProperty("password")),
-				"password is null");
-		Preconditions.checkArgument(
-				StringUtils.isNotBlank(properties.getProperty("merchantId")),
-				"merchantId is null");
-		Preconditions.checkArgument(
-				StringUtils.isNotBlank(properties.getProperty("username")),
-				"username is null");
-
 		if (testingMode) {
 			properties.put("url",
 					"https://www.testlitle.com/sandbox/communicator/online");
 			properties.put("batchHost", "https://www.testlitle.com/sandbox");
 		} else {
+			Preconditions.checkArgument(
+					StringUtils.isNotBlank(properties.getProperty("password")),
+					"password is null");
+			Preconditions.checkArgument(StringUtils.isNotBlank(properties
+					.getProperty("merchantId")), "merchantId is null");
+			Preconditions.checkArgument(
+					StringUtils.isNotBlank(properties.getProperty("username")),
+					"username is null");
 			properties.put("url",
 					"https://payments.litle.com/vap/communicator/online");
 			properties.put("batchHost", "payments.litle.com");
 		}
 		transactionGateway = new LitleTransactionGateway(this, properties);
+		setExceptionResolver(new LitleExceptionResolver());
 		setTestingMode(testingMode);
 	}
 
-	public static LitleGateway build(boolean testingMode, String username,
-			String password, String merchantId) {
+	public static LitleGateway build() {
+		Properties properties = new Properties();
+		properties.put("password", "password");
+		properties.put("merchantId", "merchantId");
+		properties.put("username", "username");
+		return new LitleGateway(true, properties);
+	}
+
+	public static LitleGateway build(String username, String password,
+			String merchantId) {
 		Properties properties = new Properties();
 		properties.put("password", password);
 		properties.put("merchantId", merchantId);
 		properties.put("username", username);
-		return new LitleGateway(testingMode, properties);
+		return new LitleGateway(false, properties);
 	}
 
 	public TransactionGateway transactionGateway() {

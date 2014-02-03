@@ -33,7 +33,8 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		this.properties = properties;
 	}
 
-	public Result doCredit(Money money, CreditCard creditcard, Address billingAddress) {
+	public Result doCredit(Money money, CreditCard creditcard,
+			Address billingAddress) {
 
 		Credit credit = new Credit();
 		CardType card = convertCreditcard(creditcard);
@@ -53,6 +54,7 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		auth.setOrderId("1");
 		auth.setAmount(money.getAmount().longValue());
 		auth.setOrderSource(OrderSourceType.ECOMMERCE);
+		auth.setReportGroup("test");
 
 		if (order != null) {
 			if (order.getBillingAddress() != null) {
@@ -84,6 +86,59 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		result.setMessage(response.getMessage());
 
 		return authorization;
+	}
+
+	public Result doCapture(Authorization authorization) {
+		com.litle.sdk.generate.Capture capture = new com.litle.sdk.generate.Capture();
+		capture.setReportGroup("test");
+		// litleTxnId contains the Litle Transaction Id returned on the
+		// authorization
+		capture.setLitleTxnId(Long.valueOf(authorization.getTransactionId()));
+		CaptureResponse response = getLitle().capture(capture);
+
+		// Display Results
+		System.out.println("Response: " + response.getResponse());
+		System.out.println("Message: " + response.getMessage());
+		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
+
+		Result result = new Result();
+		result.setSuccess("Approved".equals(response.getMessage()));
+		result.setMessage(response.getMessage());
+		return result;
+	}
+
+	public Result doCancel(String transactionId) {
+		Void dovoid = new Void();
+		dovoid.setReportGroup("test");
+		dovoid.setLitleTxnId(Long.valueOf(transactionId));
+		VoidResponse response = getLitle().dovoid(dovoid);
+
+		// Display Results
+		System.out.println("Response: " + response.getResponse());
+		System.out.println("Message: " + response.getMessage());
+		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
+
+		Result result = new Result();
+		result.setSuccess("Approved".equals(response.getMessage()));
+		result.setMessage(response.getMessage());
+		return result;
+	}
+
+	public Result doRefund(Money money, String transactionId) {
+		Credit credit = new Credit();
+		credit.setReportGroup("test");
+		// litleTxnId contains the Litle Transaction Id returned on the deposit
+		credit.setLitleTxnId(Long.valueOf(transactionId));
+		CreditResponse response = getLitle().credit(credit);
+		// Display Results
+		System.out.println("Response: " + response.getResponse());
+		System.out.println("Message: " + response.getMessage());
+		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
+
+		Result result = new Result();
+		result.setSuccess("Approved".equals(response.getMessage()));
+		result.setMessage(response.getMessage());
+		return result;
 	}
 
 	private CardType convertCreditcard(CreditCard creditcard) {
@@ -133,55 +188,5 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		// billToAddress.setCountry(CountryTypeEnum.valueOf(arg0)VU);
 		billToAddress.setZip(billingAddress.getPostalCode());
 		return billToAddress;
-	}
-
-	public Result doCapture(Authorization authorization) {
-		com.litle.sdk.generate.Capture capture = new com.litle.sdk.generate.Capture();
-		// litleTxnId contains the Litle Transaction Id returned on the
-		// authorization
-		capture.setLitleTxnId(Long.valueOf(authorization.getTransactionId()));
-		CaptureResponse response = getLitle().capture(capture);
-
-		// Display Results
-		System.out.println("Response: " + response.getResponse());
-		System.out.println("Message: " + response.getMessage());
-		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
-
-		Result result = new Result();
-		result.setSuccess("Approved".equals(response.getMessage()));
-		result.setMessage(response.getMessage());
-		return result;
-	}
-
-	public Result doCancel(String transactionId) {
-		Void dovoid = new Void();
-		dovoid.setLitleTxnId(Long.valueOf(transactionId));
-		VoidResponse response = getLitle().dovoid(dovoid);
-
-		// Display Results
-		System.out.println("Response: " + response.getResponse());
-		System.out.println("Message: " + response.getMessage());
-		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
-
-		Result result = new Result();
-		result.setSuccess("Approved".equals(response.getMessage()));
-		result.setMessage(response.getMessage());
-		return result;
-	}
-
-	public Result doRefund(Money money, String transactionId) {
-		Credit credit = new Credit();
-		// litleTxnId contains the Litle Transaction Id returned on the deposit
-		credit.setLitleTxnId(Long.valueOf(transactionId));
-		CreditResponse response = getLitle().credit(credit);
-		// Display Results
-		System.out.println("Response: " + response.getResponse());
-		System.out.println("Message: " + response.getMessage());
-		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
-
-		Result result = new Result();
-		result.setSuccess("Approved".equals(response.getMessage()));
-		result.setMessage(response.getMessage());
-		return result;
 	}
 }
