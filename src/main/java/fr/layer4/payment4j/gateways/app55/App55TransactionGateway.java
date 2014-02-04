@@ -7,6 +7,7 @@ import com.app55.domain.Card;
 import com.app55.domain.Transaction;
 import com.app55.message.TransactionCreateRequest;
 import com.app55.message.TransactionCreateResponse;
+import com.google.common.base.Preconditions;
 
 import fr.layer4.payment4j.Address;
 import fr.layer4.payment4j.Authorization;
@@ -33,21 +34,30 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 	public Result doCredit(Money money, CreditCard creditcard,
 			Address billingAddress) {
 
+		Preconditions.checkNotNull(billingAddress,
+				"Billing address can not be null");
+
 		com.app55.Gateway gateway = getGateway();
 
 		Transaction transaction = new Transaction();
 		transaction.setAmount(money.getAmount().toEngineeringString());
+		transaction.setCurrency(money.getCurrencyUnit().getCurrencyCode());
 		transaction.setCommit(true);
 		transaction.setType("sale");
-		transaction
-				.setCurrency(money.getCurrencyUnit().getCode().toLowerCase());
+		transaction.setDescription("Credit "
+				+ money.getAmount().toEngineeringString()
+				+ money.getCurrencyUnit().getCurrencyCode());
+
+		Card creditCard = convertCreditCard(creditcard, billingAddress);
 
 		TransactionCreateRequest request = gateway.createTransaction(
-				convertCreditCard(creditcard), transaction);
+				creditCard, transaction);
 		TransactionCreateResponse response = request.send();
 		response.getTransaction().getId();
 
-		return new Result();
+		Result result = new Result();
+		result.setSuccess(true);
+		return result;
 	}
 
 	@Override
@@ -57,22 +67,31 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 				.getUnderlyingAuthorization()).send();
 		response.getTransaction().getId();
 
-		return new Result();
+		Result result = new Result();
+		result.setSuccess(true);
+		return result;
 	}
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
 			Order order) {
 
+		Preconditions.checkNotNull(order, "Order can not be null");
+		Preconditions.checkNotNull(order.getBillingAddress(),
+				"Billing address can not be null");
+
 		Transaction transaction = new Transaction();
 		transaction.setAmount(money.getAmount().toEngineeringString());
+		transaction.setCurrency(money.getCurrencyUnit().getCurrencyCode());
 		transaction.setCommit(false);
 		transaction.setType("auth");
-		transaction
-				.setCurrency(money.getCurrencyUnit().getCode().toLowerCase());
+		transaction.setDescription("Authorize "
+				+ money.getAmount().toEngineeringString()
+				+ money.getCurrencyUnit().getCurrencyCode());
 
 		TransactionCreateRequest request = getGateway().createTransaction(
-				convertCreditCard(creditcard), transaction);
+				convertCreditCard(creditcard, order.getBillingAddress()),
+				transaction);
 
 		Authorization authorization = new Authorization();
 		authorization.setUnderlyingAuthorization(request);
@@ -84,27 +103,38 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 		Transaction transaction = new Transaction();
 		transaction.setId(transactionId);
 		getGateway().cancelTransaction(null, transaction);
-		return new Result();
+		Result result = new Result();
+		result.setSuccess(true);
+		return result;
 	}
 
 	@Override
 	protected Result doRefund(Money money, String transactionId) {
-		return new Result();
+		// TODO
+		Result result = new Result();
+		result.setSuccess(true);
+		return result;
 	}
 
 	public com.app55.Gateway getGateway() {
-		com.app55.Gateway gateway = new com.app55.Gateway(
-				Environment.DEVELOPMENT, apiKey, apiSecret);
+		com.app55.Gateway gateway = new com.app55.Gateway(Environment.SANDBOX,
+				apiKey, apiSecret);
 		return gateway;
 	}
 
-	public Card convertCreditCard(CreditCard creditcard) {
+	public Card convertCreditCard(CreditCard creditcard, Address billingAddress) {
 		Card card = new Card();
 		card.setNumber(creditcard.getNumber());
 		card.setSecurityCode(creditcard.getVerificationValue());
 		card.setHolderName(creditcard.getFullName());
-		// TODO
-		// card.setExpiry(expiry)
+		card.setExpiry(creditcard.getMonth() + "-" + creditcard.getYear());
+
+		com.app55.domain.Address address = new com.app55.domain.Address();
+		address.setCity(billingAddress.getCity());
+		address.setCountry(billingAddress.getCountry());
+		address.setPostalCode(billingAddress.getPostalCode());
+		address.setStreet(billingAddress.getStreetAddress());
+		card.setAddress(address);
 		return card;
 	}
 }

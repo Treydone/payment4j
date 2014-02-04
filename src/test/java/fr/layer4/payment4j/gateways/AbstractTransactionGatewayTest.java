@@ -16,13 +16,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import fr.layer4.payment4j.Address;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.ExpiredCreditCardException;
 import fr.layer4.payment4j.Gateway;
 import fr.layer4.payment4j.IncorrectCreditCardNumberException;
 import fr.layer4.payment4j.IncorrectVerificationCodeException;
 import fr.layer4.payment4j.InvalidCreditCardNumberException;
+import fr.layer4.payment4j.InvalidExpirationDateException;
 import fr.layer4.payment4j.InvalidVerificationCodeException;
+import fr.layer4.payment4j.Order;
 import fr.layer4.payment4j.Result;
 import fr.layer4.payment4j.TransactionGateway;
 
@@ -48,6 +51,10 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 	protected CreditCard invalidVerificationCodeCreditCard;
 
 	protected CreditCard expiredCreditCard;
+
+	protected Order order;
+
+	protected Address address;
 
 	protected Money money = Money.of(CurrencyUnit.EUR, 10);
 
@@ -99,7 +106,8 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 
 		// Actions
 		try {
-			Result result = transactionGateway.purchase(money, creditCard);
+			Result result = transactionGateway.purchase(money, creditCard,
+					order);
 			System.out.println(result.getMessage());
 
 			// Assert
@@ -127,7 +135,8 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 
 		// Actions
 		try {
-			Result result = transactionGateway.credit(money, creditCard);
+			Result result = transactionGateway.credit(money, creditCard,
+					address);
 			System.out.println(result.getMessage());
 
 			// Assert
@@ -156,7 +165,7 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 		// Actions
 		try {
 			Result purchaseResult = transactionGateway.purchase(money,
-					creditCard);
+					creditCard, order);
 			Result result = transactionGateway.cancel(purchaseResult
 					.getAuthorization());
 			System.out.println(result.getMessage());
@@ -171,7 +180,38 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 			catchException(expectedExceptionClass, e);
 		}
 	}
-	
+
+	protected List<Object[]> parametersForRefund() {
+		return commons();
+	}
+
+	@Test
+	@Parameters
+	public void refund(String name, CreditCard creditCard,
+			Class<? extends Exception> expectedExceptionClass) {
+
+		// Arrange
+		// prepare();
+
+		// Actions
+		try {
+			Result purchaseResult = transactionGateway.purchase(money,
+					creditCard, order);
+			Result result = transactionGateway.refund(money.minus(1),
+					purchaseResult.getAuthorization());
+			System.out.println(result.getMessage());
+
+			// Assert
+			if (expectedExceptionClass != null) {
+				fail("expected " + expectedExceptionClass.getCanonicalName());
+			}
+			assertTrue(result.isSuccess());
+
+		} catch (Exception e) {
+			catchException(expectedExceptionClass, e);
+		}
+	}
+
 	public List<Object[]> commons() {
 		data();
 		List<Object[]> list = new ArrayList<Object[]>();
@@ -184,9 +224,9 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 		list.add(new Object[] { "an expired credit card", expiredCreditCard,
 				ExpiredCreditCardException.class });
 		list.add(new Object[] {
-				"a credit card with an invalid verification code",
-				invalidVerificationCodeCreditCard,
-				InvalidVerificationCodeException.class });
+				"a credit card with an invalid expiration date",
+				invalidExpirationDateCreditCard,
+				InvalidExpirationDateException.class });
 		list.add(new Object[] {
 				"a credit card with an incorrect verification code",
 				incorrectVerificationCodeCreditCard,

@@ -97,7 +97,7 @@ public abstract class AbstractTransactionGateway implements TransactionGateway {
 				creditcard);
 		Authorization auth = null;
 		try {
-			auth = doAuthorize(money, creditcard, null);
+			auth = doAuthorize(money, creditcard, order);
 		} catch (Throwable throwable) {
 			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
 					throwable);

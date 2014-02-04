@@ -20,7 +20,7 @@ public class App55Gateway extends AbstractGateway implements TransactionCapable 
 	private App55Gateway(boolean testingMode, String apiKey, String apiSecret) {
 		transactionGateway = new App55TransactionGateway(this, apiKey,
 				apiSecret);
-		// setExceptionResolver(new StripeExceptionResolver());
+		setExceptionResolver(new App55ExceptionResolver());
 	}
 
 	public TransactionGateway transactionGateway() {

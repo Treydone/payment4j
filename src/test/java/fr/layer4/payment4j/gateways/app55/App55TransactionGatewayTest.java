@@ -1,7 +1,9 @@
 package fr.layer4.payment4j.gateways.app55;
 
+import fr.layer4.payment4j.Address;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
+import fr.layer4.payment4j.Order;
 import fr.layer4.payment4j.gateways.AbstractTransactionGatewayTest;
 import fr.layer4.payment4j.gateways.Configuration;
 
@@ -17,6 +19,14 @@ public class App55TransactionGatewayTest extends AbstractTransactionGatewayTest 
 
 		invalidCredentialsTransactionGateway = App55Gateway.build(true, "6",
 				"64").transactionGateway();
+
+		address = new Address();
+		address.setCity("vernon");
+		address.setStreetAddress("rue de bizy");
+		address.setPostalCode("27200");
+		address.setCountry("GB");
+		order = new Order();
+		order.setBillingAddress(address);
 	}
 
 	@Override
