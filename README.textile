@@ -47,10 +47,12 @@ Each provider gateway can expose one or more gateways:
 h2. Integrations
 
 |_. Provider     |_.  Progession       |
-| Paypal         | 30%              |
-| AuthorizeNet         | 50%              |
-| Stripe         | 30%              |
-| Litle         | 10%              |
+| Paypal         | 70%              |
+| AuthorizeNet         | 70%              |
+| Stripe         | 60%              |
+| WebPay         | 60%              |
+| App55         | 60%              |
+| Litle         | 30%              |
 | BrainTree  | 10%              |
 | PayBox  | 0%              |
 
