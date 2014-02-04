@@ -20,6 +20,7 @@ public class App55ExceptionResolver implements ExceptionResolver {
 
 		// https://www.app55.com/docs/api/errors/codes
 		if (throwable instanceof ApiException) {
+			
 			ApiException exception = (ApiException) throwable;
 
 			if (exception.getCode() == 0x20006) {
