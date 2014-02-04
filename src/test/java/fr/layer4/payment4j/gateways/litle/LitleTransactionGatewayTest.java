@@ -28,6 +28,22 @@ public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest 
 				.setType(CreditCardType.VISA).setFirstName("John")
 				.setLastName("Doe").setMonth(12).setYear(2015)
 				.setVerificationValue("000");
+		invalidExpirationDateCreditCard = new CreditCard()
+				.setNumber("4007000000027").setType(CreditCardType.VISA)
+				.setFirstName("John").setLastName("Doe").setMonth(12)
+				.setYear(1990).setVerificationValue("000");
+		incorrectNumberCreditCard = new CreditCard().setNumber("4007000000028")
+				.setType(CreditCardType.VISA).setFirstName("John")
+				.setLastName("Doe").setMonth(12).setYear(2015)
+				.setVerificationValue("000");
+		incorrectVerificationCodeCreditCard = new CreditCard()
+				.setNumber("4007000000027").setType(CreditCardType.VISA)
+				.setFirstName("John").setLastName("Doe").setMonth(12)
+				.setYear(2015).setVerificationValue("001");
+		invalidVerificationCodeCreditCard = new CreditCard()
+				.setNumber("4007000000027").setType(CreditCardType.VISA)
+				.setFirstName("John").setLastName("Doe").setMonth(12)
+				.setYear(2015).setVerificationValue("00");
 	}
 
 	public void init() {

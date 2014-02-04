@@ -8,7 +8,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="fr.layer4" level="debug" />
+	<logger name="fr.layer4.payment4j" level="debug" />
 
 	<root level="warn">
 		<appender-ref ref="stdout" />

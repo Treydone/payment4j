@@ -171,7 +171,38 @@ public abstract class AbstractTransactionGatewayTest extends AbstractTest {
 			catchException(expectedExceptionClass, e);
 		}
 	}
-	
+
+	protected List<Object[]> parametersForRefund() {
+		return commons();
+	}
+
+	@Test
+	@Parameters
+	public void refund(String name, CreditCard creditCard,
+			Class<? extends Exception> expectedExceptionClass) {
+
+		// Arrange
+		// prepare();
+
+		// Actions
+		try {
+			Result purchaseResult = transactionGateway.purchase(money,
+					creditCard);
+			Result result = transactionGateway.refund(money.minus(1),
+					purchaseResult.getAuthorization());
+			System.out.println(result.getMessage());
+
+			// Assert
+			if (expectedExceptionClass != null) {
+				fail("expected " + expectedExceptionClass.getCanonicalName());
+			}
+			assertTrue(result.isSuccess());
+
+		} catch (Exception e) {
+			catchException(expectedExceptionClass, e);
+		}
+	}
+
 	public List<Object[]> commons() {
 		data();
 		List<Object[]> list = new ArrayList<Object[]>();
