@@ -14,10 +14,10 @@ public class AuthorizeNetTransactionGatewayTest extends
 				Configuration.get("authorizenet.apiLoginId"),
 				Configuration.get("authorizenet.transactionKey"));
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = AuthorizeNetGateway.build(true,
-				"6", "64").transactionGateway();
+				"6", "64").transaction();
 	}
 
 	@Override

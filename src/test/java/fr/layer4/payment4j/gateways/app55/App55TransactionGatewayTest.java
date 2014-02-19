@@ -15,10 +15,10 @@ public class App55TransactionGatewayTest extends AbstractTransactionGatewayTest 
 				Configuration.get("app55.apiKey"),
 				Configuration.get("app55.apiSecret"));
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = App55Gateway.build(true, "6",
-				"64").transactionGateway();
+				"64").transaction();
 
 		address = new Address();
 		address.setCity("vernon");

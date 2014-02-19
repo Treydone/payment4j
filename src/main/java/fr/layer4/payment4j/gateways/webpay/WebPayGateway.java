@@ -28,11 +28,11 @@ public class WebPayGateway extends AbstractGateway implements
 		setExceptionResolver(new WebPayExceptionResolver());
 	}
 
-	public TransactionGateway transactionGateway() {
+	public TransactionGateway transaction() {
 		return transactionGateway;
 	}
 
-	public RecurringGateway recurringGateway() {
+	public RecurringGateway recurring() {
 		return recurringGateway;
 	}
 
@@ -42,7 +42,7 @@ public class WebPayGateway extends AbstractGateway implements
 
 	public Set<CreditCardType> getSupportedCreditCardTypes() {
 		return new HashSet<CreditCardType>(Arrays.asList(CreditCardType.VISA,
-				CreditCardType.MASTER, CreditCardType.AMERICAN_EXPRESS,
+				CreditCardType.MASTERCARD, CreditCardType.AMERICAN_EXPRESS,
 				CreditCardType.DINERS_CLUB, CreditCardType.JCB));
 	}
 

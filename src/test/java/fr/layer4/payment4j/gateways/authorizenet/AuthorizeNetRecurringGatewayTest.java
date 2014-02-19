@@ -14,10 +14,10 @@ public class AuthorizeNetRecurringGatewayTest extends
 				Configuration.get("authorizenet.apiLoginId"),
 				Configuration.get("authorizenet.transactionKey"));
 		this.gateway = gateway;
-		recurringGateway = gateway.recurringGateway();
+		recurringGateway = gateway.recurring();
 
 		invalidCredentialsRecurringGateway = AuthorizeNetGateway.build(true,
-				"6", "64").recurringGateway();
+				"6", "64").recurring();
 	}
 
 	@Override

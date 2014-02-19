@@ -2,6 +2,8 @@ package fr.layer4.payment4j;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.base.Optional;
+
 public class CreditCard {
 
 	private String number;
@@ -107,4 +109,63 @@ public class CreditCard {
 		return this;
 	}
 
+	public boolean isValid() {
+		return isValid(number);
+	}
+
+	public static boolean isValid(String number) {
+		if ((number == null) || (number.length() < 13)
+				|| (number.length() > 19)) {
+			return false;
+		}
+
+		if (!luhnCheck(number)) {
+			return false;
+		}
+
+		CreditCardType[] types = CreditCardType.values();
+		for (CreditCardType type : types) {
+			Optional<Boolean> optional = type.matches(number);
+			if (!optional.isPresent()) {
+				continue;
+			}
+			if (optional.get()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks for a valid credit card number.
+	 * 
+	 * @param cardNumber
+	 *            Credit Card Number.
+	 * @return Whether the card number passes the luhnCheck.
+	 */
+	protected static boolean luhnCheck(String cardNumber) {
+		// number must be validated as 0..9 numeric first!!
+		int digits = cardNumber.length();
+		int oddOrEven = digits & 1;
+		long sum = 0;
+		for (int count = 0; count < digits; count++) {
+			int digit = 0;
+			try {
+				digit = Integer.parseInt(cardNumber.charAt(count) + "");
+			} catch (NumberFormatException e) {
+				return false;
+			}
+
+			if (((count & 1) ^ oddOrEven) == 0) { // not
+				digit *= 2;
+				if (digit > 9) {
+					digit -= 9;
+				}
+			}
+			sum += digit;
+		}
+
+		return (sum == 0) ? false : (sum % 10 == 0);
+	}
 }

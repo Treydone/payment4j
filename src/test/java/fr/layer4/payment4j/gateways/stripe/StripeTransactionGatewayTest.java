@@ -44,10 +44,10 @@ public class StripeTransactionGatewayTest extends
 		StripeGateway gateway = StripeGateway.build(true,
 				Configuration.get("stripe.apiKey"));
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = StripeGateway.build(true,
-				"invalidKey").transactionGateway();
+				"invalidKey").transaction();
 	}
 
 	@Override

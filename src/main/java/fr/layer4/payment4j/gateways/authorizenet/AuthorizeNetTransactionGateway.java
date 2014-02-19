@@ -179,7 +179,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 
 	public Set<CreditCardType> getSupportedCreditCardTypes() {
 		return new HashSet<CreditCardType>(Arrays.asList(CreditCardType.VISA,
-				CreditCardType.MASTER, CreditCardType.AMERICAN_EXPRESS,
+				CreditCardType.MASTERCARD, CreditCardType.AMERICAN_EXPRESS,
 				CreditCardType.DISCOVER, CreditCardType.DINERS_CLUB,
 				CreditCardType.JCB));
 	}

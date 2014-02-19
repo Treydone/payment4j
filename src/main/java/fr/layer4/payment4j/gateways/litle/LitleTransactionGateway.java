@@ -166,7 +166,7 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		case JCB:
 			card.setType(MethodOfPaymentTypeEnum.JC);
 			break;
-		case MASTER:
+		case MASTERCARD:
 			card.setType(MethodOfPaymentTypeEnum.MC);
 			break;
 		case SWITCH:

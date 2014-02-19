@@ -33,10 +33,10 @@ public class PaypalTransactionGatewayTest extends
 				Configuration.get("paypal.partner"),
 				Configuration.get("paypal.password"));
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = PaypalGateway.build(true, null,
 				"vincent.devillers-facilitator_api1.layer4.fr", null, "222")
-				.transactionGateway();
+				.transaction();
 	}
 }

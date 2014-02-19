@@ -38,15 +38,15 @@ public class AuthorizeNetGateway extends AbstractGateway implements
 		setTestingMode(testingMode);
 	}
 
-	public TransactionGateway transactionGateway() {
+	public TransactionGateway transaction() {
 		return transactionGateway;
 	}
 
-	public HistoryGateway historyGateway() {
+	public HistoryGateway history() {
 		return historyGateway;
 	}
 
-	public RecurringGateway recurringGateway() {
+	public RecurringGateway recurring() {
 		return recurringGateway;
 	}
 
@@ -57,7 +57,7 @@ public class AuthorizeNetGateway extends AbstractGateway implements
 
 	public Set<CreditCardType> getSupportedCreditCardTypes() {
 		return new HashSet<CreditCardType>(Arrays.asList(CreditCardType.VISA,
-				CreditCardType.MASTER, CreditCardType.AMERICAN_EXPRESS,
+				CreditCardType.MASTERCARD, CreditCardType.AMERICAN_EXPRESS,
 				CreditCardType.DISCOVER, CreditCardType.DINERS_CLUB,
 				CreditCardType.JCB));
 	}

@@ -49,10 +49,10 @@ public class WebPayTransactionGatewayTest extends
 		WebPayGateway gateway = WebPayGateway.build(true,
 				Configuration.get("webpay.apiKey"));
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = WebPayGateway.build(true, "6z")
-				.transactionGateway();
+				.transaction();
 	}
 
 	@Override

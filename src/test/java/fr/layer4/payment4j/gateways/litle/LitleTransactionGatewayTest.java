@@ -49,9 +49,9 @@ public class LitleTransactionGatewayTest extends AbstractTransactionGatewayTest 
 	public void init() {
 		LitleGateway gateway = LitleGateway.build();
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = LitleGateway.build()
-				.transactionGateway();
+				.transaction();
 	}
 }

@@ -1,10 +1,35 @@
 package fr.layer4.payment4j;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 public class CreditCardTest {
+
+	private static final String VALID_VISA = "4417123456789113";
+	private static final String VALID_SHORT_VISA = "4222222222222";
+	private static final String VALID_AMEX = "378282246310005";
+	private static final String VALID_MASTERCARD = "5105105105105100";
+	private static final String VALID_DISCOVER = "6011000990139424";
+	private static final String VALID_DINERS = "30569309025904";
+
+	@Test
+	public void isValid() {
+		assertFalse(CreditCard.isValid(null));
+		assertFalse(CreditCard.isValid(""));
+		assertFalse(CreditCard.isValid("123456789012")); // too short
+		assertFalse(CreditCard.isValid("12345678901234567890")); // too long
+		assertFalse(CreditCard.isValid("4417123456789112"));
+		assertFalse(CreditCard.isValid("4417q23456w89113"));
+		assertTrue(CreditCard.isValid(VALID_VISA));
+		assertTrue(CreditCard.isValid(VALID_SHORT_VISA));
+		assertTrue(CreditCard.isValid(VALID_AMEX));
+		assertTrue(CreditCard.isValid(VALID_MASTERCARD));
+		assertTrue(CreditCard.isValid(VALID_DINERS));
+		assertTrue(CreditCard.isValid(VALID_DISCOVER));
+	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkYear_moreThan1990() {

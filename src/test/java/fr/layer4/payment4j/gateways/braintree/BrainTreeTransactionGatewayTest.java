@@ -18,10 +18,10 @@ public class BrainTreeTransactionGatewayTest extends
 				Configuration.get("braintree.publicKey"),
 				Configuration.get("braintree.privateKey"));
 		this.gateway = gateway;
-		transactionGateway = gateway.transactionGateway();
+		transactionGateway = gateway.transaction();
 
 		invalidCredentialsTransactionGateway = BrainTreeGateway.build(true,
-				"6z", "64w", "").transactionGateway();
+				"6z", "64w", "").transaction();
 	}
 
 	@Override
