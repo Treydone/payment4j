@@ -25,6 +25,7 @@ public abstract class AbstractTransactionGateway implements TransactionGateway {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The credit card can not be null",
 				creditcard);
+		creditcard.check();
 		Result result = null;
 		try {
 			result = doCredit(money, creditcard, billingAddress);
@@ -52,6 +53,7 @@ public abstract class AbstractTransactionGateway implements TransactionGateway {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The credit card can not be null",
 				creditcard);
+		creditcard.check();
 		Result result = null;
 		try {
 			result = doPurchase(money, creditcard, order);
@@ -95,6 +97,7 @@ public abstract class AbstractTransactionGateway implements TransactionGateway {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The credit card can not be null",
 				creditcard);
+		creditcard.check();
 		Authorization auth = null;
 		try {
 			auth = doAuthorize(money, creditcard, order);

@@ -26,7 +26,8 @@ public abstract class AbstractRecurringGateway implements RecurringGateway {
 		Preconditions.checkNotNull("The credit card can not be null",
 				creditCard);
 		Preconditions.checkNotNull("The schedule can not be null", schedule);
-
+		creditCard.check();
+		
 		if (schedule.getStartDate() == null) {
 			schedule.setStartDate(new Date());
 		}

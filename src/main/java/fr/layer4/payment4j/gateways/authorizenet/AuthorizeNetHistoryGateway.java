@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.authorizenet;
 
 import net.authorize.Merchant;
+import net.authorize.data.xml.reporting.TransactionDetails;
 import net.authorize.reporting.Result;
 import fr.layer4.payment4j.Gateway;
 import fr.layer4.payment4j.Transaction;
@@ -37,6 +38,17 @@ public class AuthorizeNetHistoryGateway extends AbstractHistoryGateway {
 		fr.layer4.payment4j.Result result = new fr.layer4.payment4j.Result();
 		result.setResponseCode(authorizeNetResult.getResultCode());
 		transactions.setResult(result);
+
+		for (TransactionDetails details : authorizeNetResult
+				.getReportingDetails().getTransactionDetailList()) {
+
+			details.getSubmitTimeUTC();
+			details.getCustomerIP();
+			details.getResponseCode();
+			details.getPayment().getCreditCard();
+			details.getFirstName();
+			details.getLastName();
+		}
 
 		for (net.authorize.data.xml.reporting.BatchDetails batchDetail : authorizeNetResult
 				.getReportingDetails().getBatchDetailsList()) {

@@ -34,8 +34,6 @@ public class CreditCard {
 	}
 
 	public String getExpirationAsForCharacter() {
-		checkYear(year);
-		checkMonth(month);
 		return StringUtils.leftPad(String.valueOf(getMonth()), 2, "0")
 				+ StringUtils.leftPad(String.valueOf(getYear()).substring(2),
 						2, "0");
@@ -46,15 +44,8 @@ public class CreditCard {
 	}
 
 	public CreditCard setMonth(int month) {
-		checkMonth(month);
 		this.month = month;
 		return this;
-	}
-
-	public void checkMonth(int month) {
-		if (month > 12 || month < 1) {
-			throw new IllegalArgumentException("month invalid");
-		}
 	}
 
 	public int getYear() {
@@ -62,15 +53,8 @@ public class CreditCard {
 	}
 
 	public CreditCard setYear(int year) {
-		checkYear(year);
 		this.year = year;
 		return this;
-	}
-
-	public void checkYear(int year) {
-		if (year > 2050 || year < 1990) {
-			throw new IllegalArgumentException("year invalid");
-		}
 	}
 
 	public String getFirstName() {
@@ -109,11 +93,28 @@ public class CreditCard {
 		return this;
 	}
 
-	public boolean isValid() {
-		return isValid(number);
+	public void check() {
+		if (!checkNumberAndType()) {
+			throw new InvalidCreditCardNumberException(this);
+		}
+		if (!checkMonth() || !checkYear()) {
+			throw new InvalidExpirationDateException(this);
+		}
+		if (checkVV()) {
+			throw new InvalidVerificationCodeException(this);
+		}
 	}
 
-	public static boolean isValid(String number) {
+	public boolean checkVV() {
+		return StringUtils.isBlank(verificationValue);
+	}
+
+	public boolean checkNumberAndType() {
+		return checkNumberAndType(number, type);
+	}
+
+	public static boolean checkNumberAndType(String number,
+			CreditCardType optionnalType) {
 		if ((number == null) || (number.length() < 13)
 				|| (number.length() > 19)) {
 			return false;
@@ -123,18 +124,40 @@ public class CreditCard {
 			return false;
 		}
 
-		CreditCardType[] types = CreditCardType.values();
-		for (CreditCardType type : types) {
-			Optional<Boolean> optional = type.matches(number);
-			if (!optional.isPresent()) {
-				continue;
-			}
-			if (optional.get()) {
-				return true;
+		if (optionnalType != null) {
+			Optional<Boolean> match = optionnalType.matches(number);
+			return match.isPresent() && match.get().booleanValue();
+		} else {
+			// Try to guess the type
+			CreditCardType[] types = CreditCardType.values();
+			for (CreditCardType type : types) {
+				Optional<Boolean> optional = type.matches(number);
+				if (!optional.isPresent()) {
+					continue;
+				}
+				if (optional.get()) {
+					return true;
+				}
 			}
 		}
 
 		return false;
+	}
+
+	public boolean checkMonth() {
+		return checkMonth(month);
+	}
+
+	public static boolean checkMonth(int month) {
+		return (month > 12 || month < 1);
+	}
+
+	public boolean checkYear() {
+		return checkYear(year);
+	}
+
+	public static boolean checkYear(int year) {
+		return (year > 2050 || year < 1990);
 	}
 
 	/**

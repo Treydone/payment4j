@@ -2,6 +2,6 @@ package fr.layer4.payment4j;
 
 public interface DirectTransferCapable {
 
-	TransactionGateway transaction();
+	DirectTransferGateway direct();
 
 }
