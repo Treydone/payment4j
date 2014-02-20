@@ -34,6 +34,9 @@ public class CreditCard {
 	}
 
 	public String getExpirationAsForCharacter() {
+		if (!checkMonth() || !checkYear()) {
+			throw new InvalidExpirationDateException(this);
+		}
 		return StringUtils.leftPad(String.valueOf(getMonth()), 2, "0")
 				+ StringUtils.leftPad(String.valueOf(getYear()).substring(2),
 						2, "0");
@@ -149,7 +152,7 @@ public class CreditCard {
 	}
 
 	public static boolean checkMonth(int month) {
-		return (month > 12 || month < 1);
+		return (month <= 12 && month >= 1);
 	}
 
 	public boolean checkYear() {
@@ -157,7 +160,7 @@ public class CreditCard {
 	}
 
 	public static boolean checkYear(int year) {
-		return (year > 2050 || year < 1990);
+		return (year < 2050 && year > 1990);
 	}
 
 	/**
