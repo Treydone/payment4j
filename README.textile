@@ -44,6 +44,7 @@ Each provider gateway can expose one or more gateways:
 | HistoryGateway         | View the last transaction, query and list transactions              |
 | CreditCardStoreGateway         | Manage credit card on a provider for your customers |
 | DirectTransferGateway         | Deal with direct transfer like IBAN |
+| MobileGateway         | Special payment on mobile via SMS premium, in-app micro payment... |
 
 h2. Integrations
 
@@ -61,6 +62,12 @@ h2. Integrations
 | Samourai  | 30%              |
 | Balanced  | 10%              |
 | MerchantesSolutions  | 30%              |
+
+h2. Sooooon...
+
+Payscape (https://payscape.com/developers/icode.php)
+Amazon Payments (http://services.amazon.com/amazon-payments/pricing-plan.html?ld=AS)
+Fortumo (http://developers.fortumo.com/)
 
 h2. Build the project
 

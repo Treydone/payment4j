@@ -11,6 +11,9 @@ import fr.layer4.payment4j.TransactionCapable;
 import fr.layer4.payment4j.TransactionGateway;
 import fr.layer4.payment4j.gateways.AbstractGateway;
 
+/**
+ * http://resources.merchante-solutions.com/display/TPGPUB/Java+Client+Library
+ */
 public class MerchanteSolutionsGateway extends AbstractGateway implements
 		TransactionCapable, RecurringCapable {
 
