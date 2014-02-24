@@ -60,6 +60,7 @@ h2. Integrations
 | Simplify  | 10%              |
 | Samourai  | 30%              |
 | Balanced  | 10%              |
+| MerchantesSolutions  | 30%              |
 
 h2. Build the project
 
