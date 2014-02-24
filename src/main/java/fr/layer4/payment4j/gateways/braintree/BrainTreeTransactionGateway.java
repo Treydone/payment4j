@@ -1,10 +1,8 @@
 package fr.layer4.payment4j.gateways.braintree;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import javax.annotation.Nullable;
 
-import org.joda.money.CurrencyUnit;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.money.Money;
 
 import com.braintreegateway.BraintreeGateway;
@@ -13,12 +11,12 @@ import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionAddressRequest;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.ValidationError;
-import com.google.common.collect.Sets;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 import fr.layer4.payment4j.Address;
 import fr.layer4.payment4j.Authorization;
 import fr.layer4.payment4j.CreditCard;
-import fr.layer4.payment4j.CreditCardType;
 import fr.layer4.payment4j.Gateway;
 import fr.layer4.payment4j.Order;
 import fr.layer4.payment4j.Result;
@@ -54,34 +52,62 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 								+ creditcard.getLastName())
 				.cvv(creditcard.getVerificationValue()).done();
 
-		BraintreeGateway gateway = getGateway();
+		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
+				merchantId, publicKey, privateKey);
 
-		com.braintreegateway.Result<Transaction> brainTreeResult = gateway
-				.transaction().credit(request);
+		com.braintreegateway.Result<Transaction> credit = gateway.transaction()
+				.credit(request);
 
+		Result result = convert(credit);
+		return result;
+	}
+
+	public Result doCapture(Authorization authorization) {
+		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
+				merchantId, publicKey, privateKey);
+		com.braintreegateway.Result<Transaction> submitForSettlement = gateway
+				.transaction().submitForSettlement(
+						authorization.getTransactionId());
+		return convert(submitForSettlement);
+	}
+
+	public Result doCancel(String transactionId) {
+		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
+				merchantId, publicKey, privateKey);
+		com.braintreegateway.Result<Transaction> voidTransaction = gateway
+				.transaction().voidTransaction(transactionId);
+		return convert(voidTransaction);
+	}
+
+	public Result doRefund(Money money, String transactionId) {
+		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
+				merchantId, publicKey, privateKey);
+		com.braintreegateway.Result<Transaction> refund = gateway.transaction()
+				.refund(transactionId, money.getAmount());
+		Result result = convert(refund);
+		return result;
+	}
+
+	private Result convert(com.braintreegateway.Result<Transaction> refund) {
 		Result result = new Result();
 		result.setSuccess(false);
-		if (brainTreeResult.isSuccess()) {
+		if (refund.isSuccess()) {
 			result.setSuccess(true);
-			Transaction transaction = brainTreeResult.getTarget();
-			System.out.println("Success!: " + transaction.getId());
-		} else if (brainTreeResult.getTransaction() != null) {
-			System.out.println("Message: " + brainTreeResult.getMessage());
-			Transaction transaction = brainTreeResult.getTransaction();
-			System.out.println("Error processing transaction:");
-			System.out.println("  Status: " + transaction.getStatus());
-			System.out.println("  Code: "
-					+ transaction.getProcessorResponseCode());
-			System.out.println("  Text: "
+		} else if (refund.getTransaction() != null) {
+			Transaction transaction = refund.getTransaction();
+			result.setMessage(refund.getMessage() + ". "
 					+ transaction.getProcessorResponseText());
+			result.setResponseCode(transaction.getProcessorResponseCode());
 		} else {
-			System.out.println("Message: " + brainTreeResult.getMessage());
-			for (ValidationError error : brainTreeResult.getErrors()
-					.getAllDeepValidationErrors()) {
-				System.out.println("Attribute: " + error.getAttribute());
-				System.out.println("  Code: " + error.getCode());
-				System.out.println("  Message: " + error.getMessage());
-			}
+			result.setMessage(refund.getMessage());
+			result.setResponseCode(StringUtils.join(Collections2.transform(
+					refund.getErrors().getAllDeepValidationErrors(),
+					new Function<ValidationError, String>() {
+						@Nullable
+						public String apply(@Nullable ValidationError input) {
+							return input.getCode().code;
+						}
+					})));
 		}
 		return result;
 	}
@@ -112,36 +138,27 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 			}
 		}
 
-		BraintreeGateway gateway = getGateway();
+		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
+				merchantId, publicKey, privateKey);
 
 		com.braintreegateway.Result<Transaction> brainTreeResult = gateway
 				.transaction().sale(request);
 
-		Result result = new Result();
-		result.setSuccess(false);
-		if (brainTreeResult.isSuccess()) {
-			result.setSuccess(true);
-			Transaction transaction = brainTreeResult.getTarget();
-			System.out.println("Success!: " + transaction.getId());
-		} else if (brainTreeResult.getTransaction() != null) {
-			System.out.println("Message: " + brainTreeResult.getMessage());
-			Transaction transaction = brainTreeResult.getTransaction();
-			System.out.println("Error processing transaction:");
-			System.out.println("  Status: " + transaction.getStatus());
-			System.out.println("  Code: "
-					+ transaction.getProcessorResponseCode());
-			System.out.println("  Text: "
-					+ transaction.getProcessorResponseText());
-		} else {
-			System.out.println("Message: " + brainTreeResult.getMessage());
-			for (ValidationError error : brainTreeResult.getErrors()
-					.getAllDeepValidationErrors()) {
-				System.out.println("Attribute: " + error.getAttribute());
-				System.out.println("  Code: " + error.getCode());
-				System.out.println("  Message: " + error.getMessage());
-			}
-		}
 		Authorization authorization = new Authorization();
+		if (brainTreeResult.isSuccess()) {
+			Transaction transaction = brainTreeResult.getTarget();
+			authorization.setTransactionId(transaction.getId());
+		}
+		authorization.setAuthorizationCode(StringUtils.join(Collections2
+				.transform(brainTreeResult.getErrors()
+						.getAllDeepValidationErrors(),
+						new Function<ValidationError, String>() {
+							@Nullable
+							public String apply(@Nullable ValidationError input) {
+								return input.getCode().code;
+							}
+						})));
+
 		return authorization;
 	}
 
@@ -152,49 +169,6 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 				.firstName(address.getFirstName())
 				.lastName(address.getLastName())
 				.postalCode(address.getPostalCode()).done();
-	}
-
-	private BraintreeGateway getGateway() {
-		BraintreeGateway gateway = new BraintreeGateway(
-				this.gateway.isTestingMode() ? Environment.SANDBOX
-						: Environment.PRODUCTION, merchantId, publicKey,
-				privateKey);
-		return gateway;
-	}
-
-	public Result doCapture(Authorization authorization) {
-		return null;
-	}
-
-	public Result doCancel(String transactionId) {
-		return null;
-	}
-
-	public Result doRefund(Money money, String transactionId) {
-		return null;
-	}
-
-	public Set<CreditCardType> getSupportedCreditCardTypes() {
-		return new HashSet<CreditCardType>(Arrays.asList(CreditCardType.VISA,
-				CreditCardType.MASTERCARD, CreditCardType.AMERICAN_EXPRESS,
-				CreditCardType.DISCOVER, CreditCardType.DINERS_CLUB,
-				CreditCardType.JCB));
-	}
-
-	public String getHomepageUrl() {
-		return "http//www.authorize.net/";
-	}
-
-	public String getDisplayName() {
-		return "Authorize.Net";
-	}
-
-	public CurrencyUnit getDefaultCurrency() {
-		return CurrencyUnit.USD;
-	}
-
-	public Set<String> getSupportedCountries() {
-		return Sets.newHashSet("US", "CA", "GB");
 	}
 
 }

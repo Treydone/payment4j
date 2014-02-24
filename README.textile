@@ -13,7 +13,7 @@ CreditCard creditCard = new CreditCard().setNumber("4007000000027")
 
 AuthorizeNetGateway
 		.build(true, "authorizenet.apiLoginId","authorizenet.transactionKey").
-			transactionGateway()
+			transaction
 				.purchase(Money.of(CurrencyUnit.EUR, 10), creditCard);
 </pre></code>
 
@@ -30,7 +30,7 @@ schedule.setTotalOccurences(3);
 
 AuthorizeNetGateway
 	.build(true, "authorizenet.apiLoginId","authorizenet.transactionKey")
-		.recurringGateway()
+		.recurring
 			.recurring(Money.of(CurrencyUnit.EUR, 10), creditCard, schedule);
 </pre></code>
 
@@ -43,6 +43,7 @@ Each provider gateway can expose one or more gateways:
 | RecurringGateway         | Reccuring payment              |
 | HistoryGateway         | View the last transaction, query and list transactions              |
 | CreditCardStoreGateway         | Manage credit card on a provider for your customers |
+| DirectTransferGateway         | Deal with direct transfer like IBAN |
 
 h2. Integrations
 
@@ -55,6 +56,10 @@ h2. Integrations
 | Litle         | 30%              |
 | BrainTree  | 10%              |
 | PayBox  | 0%              |
+| Paymill  | 30%              |
+| Simplify  | 10%              |
+| Samourai  | 30%              |
+| Balanced  | 10%              |
 
 h2. Build the project
 

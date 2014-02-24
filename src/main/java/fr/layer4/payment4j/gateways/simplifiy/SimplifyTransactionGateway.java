@@ -22,7 +22,8 @@ public class SimplifyTransactionGateway extends AbstractTransactionGateway {
 
 	private String publicKey;
 
-	public SimplifyTransactionGateway(Gateway gateway) {
+	public SimplifyTransactionGateway(Gateway gateway, String privateKey,
+			String publicKey) {
 		super(gateway);
 	}
 

@@ -1,10 +1,13 @@
 package fr.layer4.payment4j.gateways.paymill;
 
+import java.math.BigDecimal;
+
 import org.iban4j.Iban;
 import org.joda.money.Money;
 
 import com.paymill.context.PaymillContext;
 import com.paymill.models.Payment;
+import com.paymill.models.Payment.Type;
 
 import fr.layer4.payment4j.Gateway;
 import fr.layer4.payment4j.Result;
@@ -27,12 +30,13 @@ public class PaymillDirectTransferGateway extends AbstractDirectTransferGateway 
 	@Override
 	protected Result doPurchase(Money money, Iban iban) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
-
-		// paymillContext.getClientService().tPaymentService()SubscriptionService().PreauthorizationService().TransactionService().
-
-		// Payment payment =
-		// paymillContext.getPaymentService().createWithToken("");
-		// payment.
-		return null;
+		Payment payment = new Payment();
+		payment.setType(Type.DEBIT);
+		paymillContext.getTransactionService().createWithPayment(payment,
+				money.getAmount().multiply(BigDecimal.valueOf(100)).intValue(),
+				money.getCurrencyUnit().getCurrencyCode());
+		Result result = new Result();
+		result.setSuccess(true);
+		return result;
 	}
 }
