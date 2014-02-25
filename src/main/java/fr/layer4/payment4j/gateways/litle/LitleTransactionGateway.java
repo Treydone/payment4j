@@ -11,6 +11,7 @@ import com.litle.sdk.generate.AuthorizationResponse;
 import com.litle.sdk.generate.CaptureResponse;
 import com.litle.sdk.generate.CardType;
 import com.litle.sdk.generate.Contact;
+import com.litle.sdk.generate.CountryTypeEnum;
 import com.litle.sdk.generate.Credit;
 import com.litle.sdk.generate.CreditResponse;
 import com.litle.sdk.generate.MethodOfPaymentTypeEnum;
@@ -52,9 +53,6 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 
 		CreditResponse response = getLitle().credit(credit);
 
-		// Display Results
-		System.out.println(ToStringBuilder.reflectionToString(response));
-
 		Result result = new Result();
 		result.setSuccess("Approved".equals(response.getMessage()));
 		result.setMessage(response.getMessage());
@@ -82,9 +80,6 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		auth.setCard(card);
 
 		AuthorizationResponse response = getLitle().authorize(auth);
-
-		// Display Results
-		System.out.println(ToStringBuilder.reflectionToString(response));
 
 		Authorization authorization = new Authorization();
 		authorization
@@ -119,11 +114,6 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		dovoid.setLitleTxnId(Long.valueOf(transactionId));
 		VoidResponse response = getLitle().dovoid(dovoid);
 
-		// Display Results
-		System.out.println("Response: " + response.getResponse());
-		System.out.println("Message: " + response.getMessage());
-		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
-
 		Result result = new Result();
 		result.setSuccess("Approved".equals(response.getMessage()));
 		result.setMessage(response.getMessage());
@@ -136,10 +126,6 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		// litleTxnId contains the Litle Transaction Id returned on the deposit
 		credit.setLitleTxnId(Long.valueOf(transactionId));
 		CreditResponse response = getLitle().credit(credit);
-		// Display Results
-		System.out.println("Response: " + response.getResponse());
-		System.out.println("Message: " + response.getMessage());
-		System.out.println("Litle Transaction ID: " + response.getLitleTxnId());
 
 		Result result = new Result();
 		result.setSuccess("Approved".equals(response.getMessage()));
@@ -173,8 +159,10 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 			card.setType(MethodOfPaymentTypeEnum.VI);
 			break;
 		case VISA:
-		default:
 			card.setType(MethodOfPaymentTypeEnum.VI);
+			break;
+		default:
+			card.setType(MethodOfPaymentTypeEnum.BLANK);
 		}
 		return card;
 	}
@@ -188,9 +176,13 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		billToAddress.setName(billingAddress.getFullName());
 		billToAddress.setAddressLine1(billingAddress.getStreetAddress());
 		billToAddress.setCity(billingAddress.getCity());
-		billToAddress.setState(billingAddress.getState());
-		billToAddress.setAddressLine2(billingAddress.getCountry());
-		// billToAddress.setCountry(CountryTypeEnum.valueOf(arg0)VU);
+		if (billingAddress.getState() != null) {
+			billToAddress.setState(billingAddress.getState().getName());
+		}
+		if (billingAddress.getCountry() != null) {
+			billToAddress.setCountry(CountryTypeEnum.valueOf(billingAddress
+					.getCountry().getIsoCode()));
+		}
 		billToAddress.setZip(billingAddress.getPostalCode());
 		return billToAddress;
 	}

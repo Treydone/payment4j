@@ -6,6 +6,8 @@ public enum ScheduleUnit {
 
 	WEEK,
 
-	MONTH
+	MONTH,
+	
+	YEAR
 
 }

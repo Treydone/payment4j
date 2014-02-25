@@ -32,6 +32,10 @@ public abstract class PaypalUtils {
 			System.out.println("DUPLICATE = " + trxnResponse.getDuplicate());
 		}
 
+		if (resp.getRecurringResponse() != null) {
+			result.setRecurringRef(resp.getRecurringResponse().getRpRef());
+		}
+
 		// Get the Fraud Response parameters.
 		FraudResponse fraudResp = resp.getFraudResponse();
 		if (fraudResp != null) {

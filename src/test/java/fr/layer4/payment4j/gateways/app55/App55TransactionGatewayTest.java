@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.app55;
 
 import fr.layer4.payment4j.Address;
+import fr.layer4.payment4j.Country;
 import fr.layer4.payment4j.CreditCard;
 import fr.layer4.payment4j.CreditCardType;
 import fr.layer4.payment4j.Order;
@@ -24,7 +25,7 @@ public class App55TransactionGatewayTest extends AbstractTransactionGatewayTest 
 		address.setCity("vernon");
 		address.setStreetAddress("rue de bizy");
 		address.setPostalCode("27200");
-		address.setCountry("GB");
+		address.setCountry(Country.UNITED_KINGDOM);
 		order = new Order();
 		order.setBillingAddress(address);
 	}

@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.money.Money;
 
 import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Environment;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionAddressRequest;
 import com.braintreegateway.TransactionRequest;
@@ -41,8 +40,6 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 
 		TransactionRequest request = new TransactionRequest()
 				.amount(money.getAmount())
-				// TODO
-				// .deviceData(deviceData)
 				.creditCard()
 				.number(creditcard.getNumber())
 				.expirationMonth(Integer.toString(creditcard.getMonth()))
@@ -107,7 +104,7 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 						public String apply(@Nullable ValidationError input) {
 							return input.getCode().code;
 						}
-					})));
+					}), ","));
 		}
 		return result;
 	}
@@ -117,8 +114,6 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 
 		TransactionRequest request = new TransactionRequest()
 				.amount(money.getAmount())
-				// TODO
-				// .deviceData(deviceData)
 				.creditCard()
 				.number(creditcard.getNumber())
 				.expirationMonth(Integer.toString(creditcard.getMonth()))
@@ -157,18 +152,19 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 							public String apply(@Nullable ValidationError input) {
 								return input.getCode().code;
 							}
-						})));
+						}), ","));
 
 		return authorization;
 	}
 
 	private void setAddress(Address address,
 			TransactionAddressRequest addressRequest) {
-		addressRequest.countryName(address.getCountry())
-				.streetAddress(address.getStreetAddress())
+		addressRequest.streetAddress(address.getStreetAddress())
 				.firstName(address.getFirstName())
 				.lastName(address.getLastName())
-				.postalCode(address.getPostalCode()).done();
+				.postalCode(address.getPostalCode());
+		if (address.getCountry() != null)
+			addressRequest.countryName(address.getCountry().getName());
 	}
 
 }

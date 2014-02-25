@@ -6,8 +6,6 @@ import org.joda.money.Money;
 
 import com.paymill.context.PaymillContext;
 import com.paymill.models.Payment;
-import com.paymill.models.Payment.CardType;
-import com.paymill.models.Payment.Type;
 import com.paymill.models.Transaction;
 
 import fr.layer4.payment4j.Address;
@@ -51,36 +49,7 @@ public class PaymillTransactionGateway extends AbstractTransactionGateway {
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
 			Order order) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
-		Payment payment = new Payment();
-		switch (creditcard.getType()) {
-		case AMERICAN_EXPRESS:
-			payment.setCardType(CardType.AMEX);
-			break;
-		case MASTERCARD:
-			payment.setCardType(CardType.MASTERCARD);
-			break;
-		case DINERS_CLUB:
-			payment.setCardType(CardType.DINERS);
-			break;
-		case JCB:
-			payment.setCardType(CardType.JCB);
-			break;
-		case DISCOVER:
-			payment.setCardType(CardType.DISCOVER);
-			break;
-		case MAESTRO:
-			payment.setCardType(CardType.MASTRO);
-			break;
-		case VISA:
-			payment.setCardType(CardType.VISA);
-			break;
-		default:
-			payment.setCardType(CardType.UNKNOWN);
-			break;
-		}
-		payment.setExpireMonth(creditcard.getMonth());
-		payment.setExpireYear(creditcard.getYear());
-		payment.setType(Type.CREDITCARD);
+		Payment payment = PaymillUtils.convertCreditCard(creditcard);
 		Transaction transaction = paymillContext.getPreauthorizationService()
 				.createWithPayment(
 						payment,

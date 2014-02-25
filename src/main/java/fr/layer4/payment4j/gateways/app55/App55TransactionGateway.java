@@ -117,9 +117,10 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 	}
 
 	public com.app55.Gateway getGateway() {
-		com.app55.Gateway gateway = new com.app55.Gateway(Environment.SANDBOX,
-				apiKey, apiSecret);
-		return gateway;
+		com.app55.Gateway app55Gateway = new com.app55.Gateway(
+				gateway.isTestingMode() ? Environment.SANDBOX
+						: Environment.PRODUCTION, apiKey, apiSecret);
+		return app55Gateway;
 	}
 
 	public Card convertCreditCard(CreditCard creditcard, Address billingAddress) {
@@ -131,7 +132,9 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 
 		com.app55.domain.Address address = new com.app55.domain.Address();
 		address.setCity(billingAddress.getCity());
-		address.setCountry(billingAddress.getCountry());
+		if (billingAddress.getCountry() != null) {
+			address.setCountry(billingAddress.getCountry().getName());
+		}
 		address.setPostalCode(billingAddress.getPostalCode());
 		address.setStreet(billingAddress.getStreetAddress());
 		card.setAddress(address);

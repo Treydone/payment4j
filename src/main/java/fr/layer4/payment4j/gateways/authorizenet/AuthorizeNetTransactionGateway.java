@@ -52,7 +52,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		creditTransaction.setCreditCard(AuthorizeNetUtils
 				.convertCreditCard(creditcard));
 
-		net.authorize.aim.Result authorizeNetResult = (net.authorize.aim.Result) merchant
+		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction(creditTransaction);
 		Result result = convertResult(authorizeNetResult);
 		return result;
@@ -91,10 +91,12 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 				shippingAddress.setAddress(address.getStreetAddress());
 				shippingAddress.setFirstName(address.getFirstName());
 				shippingAddress.setLastName(address.getLastName());
-				shippingAddress.setCountry(address.getCountry());
+				if (address.getCountry() != null)
+					shippingAddress.setCountry(address.getCountry().getName());
 				shippingAddress.setZipPostalCode(address.getPostalCode());
 				shippingAddress.setCity(address.getCity());
-				shippingAddress.setState(address.getState());
+				if (address.getState() != null)
+					shippingAddress.setState(address.getState().getName());
 				shippingAddress.setCompany(address.getCompany());
 				authCaptureTransaction.setShippingAddress(shippingAddress);
 			}
@@ -116,7 +118,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 	public Result doCapture(Authorization authorization) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
-		net.authorize.aim.Result authorizeNetResult = (net.authorize.aim.Result) merchant
+		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction((net.authorize.Transaction) authorization
 						.getUnderlyingAuthorization());
 		Result result = convertResult(authorizeNetResult);
@@ -131,7 +133,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 				TransactionType.VOID, new BigDecimal(0));
 		voidTransaction.setTransactionId(transactionId);
 
-		net.authorize.aim.Result authorizeNetResult = (net.authorize.aim.Result) merchant
+		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction(voidTransaction);
 
 		Result result = convertResult(authorizeNetResult);
@@ -144,7 +146,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		Transaction creditTransaction = merchant.createAIMTransaction(
 				TransactionType.CREDIT, money.getAmount());
 		creditTransaction.setCreditCard(null);
-		net.authorize.aim.Result authorizeNetResult = (net.authorize.aim.Result) merchant
+		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction(creditTransaction);
 
 		Result result = convertResult(authorizeNetResult);
@@ -199,5 +201,4 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 	public Set<String> getSupportedCountries() {
 		return Sets.newHashSet("US", "CA", "GB");
 	}
-
 }

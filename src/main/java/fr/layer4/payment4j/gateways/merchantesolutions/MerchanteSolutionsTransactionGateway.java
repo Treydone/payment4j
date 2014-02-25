@@ -39,8 +39,16 @@ public class MerchanteSolutionsTransactionGateway extends
 				settings);
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.CREDIT)
 				.cardData(MerchanteSolutionsUtils.convertCreditCard(creditcard));
-		mesGateway.run(sRequest);
-		return null;
+		GatewayResponse response = mesGateway.run(sRequest);
+		return extractResult(response);
+	}
+
+	private Result extractResult(GatewayResponse response) {
+		Result result = new Result();
+		result.setSuccess(response.isApproved());
+		result.setResponseCode(response.getErrorCode());
+		result.setMessage(response.getRawResponse());
+		return result;
 	}
 
 	@Override
@@ -50,8 +58,8 @@ public class MerchanteSolutionsTransactionGateway extends
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.SETTLE)
 				.setParameter("transaction_id",
 						authorization.getTransactionId());
-		mesGateway.run(sRequest);
-		return null;
+		GatewayResponse response = mesGateway.run(sRequest);
+		return extractResult(response);
 	}
 
 	@Override
@@ -71,7 +79,10 @@ public class MerchanteSolutionsTransactionGateway extends
 			if (shippingAddress != null) {
 				sRequest.shippingName(shippingAddress.getFirstName(),
 						shippingAddress.getLastName());
-				sRequest.shippingCountry(shippingAddress.getCountry());
+				if (shippingAddress.getCountry() != null) {
+					sRequest.shippingCountry(shippingAddress.getCountry()
+							.getName());
+				}
 				sRequest.shippingAddress(shippingAddress.getStreetAddress(),
 						shippingAddress.getPostalCode());
 			}
@@ -89,8 +100,8 @@ public class MerchanteSolutionsTransactionGateway extends
 				settings);
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.VOID)
 				.setParameter("transaction_id", transactionId);
-		mesGateway.run(sRequest);
-		return null;
+		GatewayResponse response = mesGateway.run(sRequest);
+		return extractResult(response);
 	}
 
 	@Override
@@ -100,7 +111,7 @@ public class MerchanteSolutionsTransactionGateway extends
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.REFUND)
 				.amount(money.getAmount()).setParameter("transaction_id",
 						transactionId);
-		mesGateway.run(sRequest);
-		return null;
+		GatewayResponse response = mesGateway.run(sRequest);
+		return extractResult(response);
 	}
 }

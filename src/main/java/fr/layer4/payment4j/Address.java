@@ -12,9 +12,9 @@ public class Address {
 
 	private String city;
 
-	private String state;
+	private State state;
 
-	private String country;
+	private Country country;
 
 	private String postalCode;
 
@@ -24,8 +24,9 @@ public class Address {
 		return company;
 	}
 
-	public void setCompany(String company) {
+	public Address setCompany(String company) {
 		this.company = company;
+		return this;
 	}
 
 	public String getFullName() {
@@ -36,64 +37,71 @@ public class Address {
 		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
+	public Address setFirstName(String firstName) {
 		this.firstName = firstName;
+		return this;
 	}
 
 	public String getLastName() {
 		return lastName;
 	}
 
-	public void setLastName(String lastName) {
+	public Address setLastName(String lastName) {
 		this.lastName = lastName;
+		return this;
 	}
 
 	public String getStreetAddress() {
 		return streetAddress;
 	}
 
-	public void setStreetAddress(String streetAddress) {
+	public Address setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
+		return this;
 	}
 
 	public String getCity() {
 		return city;
 	}
 
-	public void setCity(String city) {
+	public Address setCity(String city) {
 		this.city = city;
+		return this;
 	}
 
-	public String getState() {
+	public State getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public Address setState(State state) {
 		this.state = state;
+		return this;
 	}
 
-	public String getCountry() {
+	public Country getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public Address setCountry(Country country) {
 		this.country = country;
+		return this;
 	}
 
 	public String getPostalCode() {
 		return postalCode;
 	}
 
-	public void setPostalCode(String postalCode) {
+	public Address setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
+		return this;
 	}
 
 	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(String phone) {
+	public Address setPhone(String phone) {
 		this.phone = phone;
+		return this;
 	}
-
 }

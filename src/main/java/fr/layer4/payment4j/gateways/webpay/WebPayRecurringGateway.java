@@ -43,15 +43,15 @@ public class WebPayRecurringGateway extends AbstractRecurringGateway {
 				.intValue());
 		plan.setCurrency(money.getCurrencyUnit().getCode().toLowerCase());
 		switch (schedule.getEach()) {
-		case DAY:
-			throw new NotImplementedException(
-					"Day plan subscription are not allowed on Stripe");
 		case MONTH:
 			plan.setInterval("month");
 			break;
 		case WEEK:
 			plan.setInterval("week");
 			break;
+		default:
+			throw new NotImplementedException(
+					"Day plan subscription are not allowed on Stripe");
 		}
 		plan.setIntervalCount(Integer.valueOf(schedule.getInterval()));
 

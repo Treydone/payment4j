@@ -89,12 +89,15 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 		switch (schedule.getEach()) {
 		case DAY:
 			throw new NotImplementedException(
-					"Poor of you, days scheduling is not implementing...");
+					"Poor of you, days scheduling is not implemented...");
 		case WEEK:
 			recurInfo.setPayPeriod("WEEK");
 			break;
 		case MONTH:
 			recurInfo.setPayPeriod("MONT");
+			break;
+		case YEAR:
+			recurInfo.setPayPeriod("YEAR");
 			break;
 		}
 
@@ -116,12 +119,7 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
-		PaypalUtils.extractResult(resp);
-
-		Result result2 = new Result();
-		result2.setSuccess(true);
-		result2.setRecurringRef(resp.getRecurringResponse().getRpRef());
-		return result2;
+		return PaypalUtils.extractResult(resp);
 	}
 
 	@Override
@@ -140,9 +138,6 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 
 		// Submit the Transaction
 		Response resp = trans.submitTransaction();
-
-		Result result2 = new Result();
-		result2.setSuccess(true);
-		return result2;
+		return PaypalUtils.extractResult(resp);
 	}
 }

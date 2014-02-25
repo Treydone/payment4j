@@ -52,6 +52,9 @@ public class StripeRecurringGateway extends AbstractRecurringGateway {
 		case WEEK:
 			plan.setInterval("week");
 			break;
+		default:
+			throw new NotImplementedException(
+					"Poor of you, other scheduling are not implemented...");
 		}
 		plan.setIntervalCount(Integer.valueOf(schedule.getInterval()));
 

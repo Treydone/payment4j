@@ -53,6 +53,10 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 			paymentSchedule.setIntervalLength(schedule.getInterval());
 			paymentSchedule.setSubscriptionUnit(SubscriptionUnitType.MONTHS);
 			break;
+		case YEAR:
+			paymentSchedule.setIntervalLength(schedule.getInterval() * 12);
+			paymentSchedule.setSubscriptionUnit(SubscriptionUnitType.MONTHS);
+			break;
 		}
 		paymentSchedule.setTotalOccurrences(schedule.getTotalOccurences());
 		paymentSchedule.setTrialOccurrences(0);

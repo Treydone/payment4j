@@ -56,15 +56,15 @@ public class MerchanteSolutionsRecurringGateway extends
 		case MONTH:
 			cRequest.setFrequency(PaymentFrequency.MONTHLY);
 			break;
+		case YEAR:
+			cRequest.setFrequency(PaymentFrequency.ANNUALLY);
+			break;
 		default:
 			throw new NotImplementedException();
 		}
 
 		RbsResponse cResponse = rbs.run(cRequest);
-		if (cResponse.requestSuccessful()) {
-			// Store Results
-		}
-		return null;
+		return extractResult(cResponse);
 	}
 
 	@Override
@@ -73,10 +73,14 @@ public class MerchanteSolutionsRecurringGateway extends
 
 		RbsRequest cRequest = new RbsRequest(RequestType.DELETE);
 		RbsResponse cResponse = rbs.run(cRequest);
-		if (cResponse.requestSuccessful()) {
-			// Store Results
-		}
-		return null;
+		return extractResult(cResponse);
 	}
 
+	private Result extractResult(RbsResponse response) {
+		Result result = new Result();
+		result.setSuccess(response.requestSuccessful());
+		result.setResponseCode(response.getErrorCode());
+		result.setMessage(response.getRawResponse());
+		return result;
+	}
 }

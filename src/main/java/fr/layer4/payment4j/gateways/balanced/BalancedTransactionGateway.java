@@ -91,6 +91,13 @@ public class BalancedTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Result doCancel(String transactionId) {
+		Hold hold = new Hold();
+		hold.transaction_number = transactionId;
+		try {
+			hold.delete();
+		} catch (Exception e) {
+			throw Throwables.propagate(e);
+		}
 		return null;
 	}
 

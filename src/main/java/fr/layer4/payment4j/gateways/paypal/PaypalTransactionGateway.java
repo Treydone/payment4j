@@ -64,8 +64,12 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 			bill.setCompanyName(billingAddress.getCompany());
 			bill.setFirstName(billingAddress.getFirstName());
 			bill.setLastName(billingAddress.getLastName());
-			bill.setBillToCountry(billingAddress.getCountry());
-			bill.setState(billingAddress.getState());
+			if (billingAddress.getCountry() != null) {
+				bill.setBillToCountry(billingAddress.getCountry().getName());
+			}
+			if (billingAddress.getState() != null) {
+				bill.setState(billingAddress.getState().getName());
+			}
 			inv.setBillTo(bill);
 		}
 
@@ -146,8 +150,12 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 				bill.setCompanyName(address.getCompany());
 				bill.setFirstName(address.getFirstName());
 				bill.setLastName(address.getLastName());
-				bill.setBillToCountry(address.getCountry());
-				bill.setState(address.getState());
+				if (address.getCountry() != null) {
+					bill.setBillToCountry(address.getCountry().getName());
+				}
+				if (address.getState() != null) {
+					bill.setState(address.getState().getName());
+				}
 				inv.setBillTo(bill);
 			}
 			if (order.getShippingAddress() != null) {
@@ -158,8 +166,12 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 				ship.setShipToCity(address.getCity());
 				ship.setShipToFirstName(address.getFirstName());
 				ship.setShipToLastName(address.getLastName());
-				ship.setShipToCountry(address.getCountry());
-				ship.setShipToState(address.getState());
+				if (address.getCountry() != null) {
+					ship.setShipToCountry(address.getCountry().getName());
+				}
+				if (address.getState() != null) {
+					ship.setShipToState(address.getState().getName());
+				}
 				inv.setShipTo(ship);
 			}
 		}
