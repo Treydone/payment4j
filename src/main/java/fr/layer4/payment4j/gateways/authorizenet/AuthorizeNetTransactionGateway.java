@@ -54,7 +54,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 
 		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction(creditTransaction);
-		Result result = convertResult(authorizeNetResult);
+		Result result = AuthorizeNetUtils.convertResult(authorizeNetResult);
 		return result;
 	}
 
@@ -121,7 +121,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction((net.authorize.Transaction) authorization
 						.getUnderlyingAuthorization());
-		Result result = convertResult(authorizeNetResult);
+		Result result = AuthorizeNetUtils.convertResult(authorizeNetResult);
 		return result;
 	}
 
@@ -136,7 +136,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction(voidTransaction);
 
-		Result result = convertResult(authorizeNetResult);
+		Result result = AuthorizeNetUtils.convertResult(authorizeNetResult);
 		return result;
 	}
 
@@ -149,33 +149,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
 				.postTransaction(creditTransaction);
 
-		Result result = convertResult(authorizeNetResult);
-		return result;
-	}
-
-	private Result convertResult(
-			net.authorize.aim.Result<Transaction> authorizeNetResult) {
-		Result result = new Result();
-		result.setResponseCode(authorizeNetResult.getReasonResponseCode()
-				.toString());
-		if (authorizeNetResult.isApproved()) {
-			result.setSuccess(true);
-			result.setMessage("Approved! "
-					+ authorizeNetResult.getReasonResponseCode() + " : "
-					+ authorizeNetResult.getResponseText());
-			result.setAuthorization(authorizeNetResult.getTarget()
-					.getTransactionId());
-		} else if (authorizeNetResult.isDeclined()) {
-			result.setSuccess(false);
-			result.setMessage("Declined! "
-					+ authorizeNetResult.getReasonResponseCode() + " : "
-					+ authorizeNetResult.getResponseText());
-		} else {
-			result.setSuccess(false);
-			result.setMessage("Error! "
-					+ authorizeNetResult.getReasonResponseCode() + " : "
-					+ authorizeNetResult.getResponseText());
-		}
+		Result result = AuthorizeNetUtils.convertResult(authorizeNetResult);
 		return result;
 	}
 

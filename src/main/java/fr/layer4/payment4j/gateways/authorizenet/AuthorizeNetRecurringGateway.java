@@ -8,7 +8,6 @@ import net.authorize.data.arb.PaymentSchedule;
 import net.authorize.data.arb.Subscription;
 import net.authorize.data.arb.SubscriptionUnitType;
 import net.authorize.data.xml.Payment;
-import net.authorize.xml.Message;
 
 import org.joda.money.Money;
 
@@ -84,22 +83,7 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 						subscription);
 		net.authorize.arb.Result<Transaction> result = (net.authorize.arb.Result<Transaction>) merchant
 				.postTransaction(transaction);
-
-		System.out.println("Result Code: "
-				+ (result.getResultCode() != null ? result.getResultCode()
-						: "No result code") + "<br/>");
-		System.out.println("Result Subscription Id: "
-				+ result.getResultSubscriptionId() + "<br/>");
-		for (int i = 0; i < result.getMessages().size(); i++) {
-			Message message = (Message) result.getMessages().get(i);
-			System.out.println("Message code/text: " + message.getCode()
-					+ " - " + message.getText() + "<br/>");
-		}
-
-		Result result2 = new Result();
-		result2.setSuccess(true);
-		result2.setRecurringRef(ref);
-		return result2;
+		return AuthorizeNetUtils.convertResult(result);
 	}
 
 	@Override
@@ -117,19 +101,6 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 						subscription);
 		net.authorize.arb.Result<Transaction> result = (net.authorize.arb.Result<Transaction>) merchant
 				.postTransaction(transaction);
-
-		System.out.println("Result Code: "
-				+ (result.getResultCode() != null ? result.getResultCode()
-						: "No result code") + "<br/>");
-		System.out.println("Result Subscription Id: "
-				+ result.getResultSubscriptionId() + "<br/>");
-		for (int i = 0; i < result.getMessages().size(); i++) {
-			Message message = (Message) result.getMessages().get(i);
-			System.out.println("Message code/text: " + message.getCode()
-					+ " - " + message.getText() + "<br/>");
-		}
-		Result result2 = new Result();
-		result2.setSuccess(true);
-		return result2;
+		return AuthorizeNetUtils.convertResult(result);
 	}
 }

@@ -9,6 +9,36 @@ public class Transaction {
 
 	private BigDecimal amount;
 
+	private String returnCode;
+
+	private Exception returnException;
+
+	private TransactionStatus status;
+
+	public TransactionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TransactionStatus status) {
+		this.status = status;
+	}
+
+	public String getReturnCode() {
+		return returnCode;
+	}
+
+	public void setReturnCode(String returnCode) {
+		this.returnCode = returnCode;
+	}
+
+	public Exception getReturnException() {
+		return returnException;
+	}
+
+	public void setReturnException(Exception returnException) {
+		this.returnException = returnException;
+	}
+
 	public Date getSubmitted() {
 		return submitted;
 	}
