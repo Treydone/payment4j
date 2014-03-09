@@ -2,6 +2,7 @@ package fr.layer4.payment4j.gateways.paypal;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.joda.money.Money;
@@ -40,7 +41,7 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 
 	@Override
 	protected Result doRecurring(Money money, CreditCard creditcard,
-			Schedule schedule) {
+			Schedule schedule, Map<String, Object> options) {
 
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
@@ -123,7 +124,8 @@ public class PaypayRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected Result doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference,
+			Map<String, Object> options) {
 
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();

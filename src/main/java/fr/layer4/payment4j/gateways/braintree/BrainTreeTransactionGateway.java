@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways.braintree;
 
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +38,7 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 
 		TransactionRequest request = new TransactionRequest()
 				.amount(money.getAmount())
@@ -59,7 +61,8 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 		return result;
 	}
 
-	public Result doCapture(Authorization authorization) {
+	public Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
 				merchantId, publicKey, privateKey);
 		com.braintreegateway.Result<Transaction> submitForSettlement = gateway
@@ -68,7 +71,7 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 		return convert(submitForSettlement);
 	}
 
-	public Result doCancel(String transactionId) {
+	public Result doCancel(String transactionId, Map<String, Object> options) {
 		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
 				merchantId, publicKey, privateKey);
 		com.braintreegateway.Result<Transaction> voidTransaction = gateway
@@ -76,7 +79,8 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 		return convert(voidTransaction);
 	}
 
-	public Result doRefund(Money money, String transactionId) {
+	public Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
 				merchantId, publicKey, privateKey);
 		com.braintreegateway.Result<Transaction> refund = gateway.transaction()
@@ -110,7 +114,7 @@ public class BrainTreeTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	public Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
 		TransactionRequest request = new TransactionRequest()
 				.amount(money.getAmount())

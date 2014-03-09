@@ -1,7 +1,7 @@
 package fr.layer4.payment4j;
 
 public class Address {
-
+	
 	private String company;
 
 	private String firstName;

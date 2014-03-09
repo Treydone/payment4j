@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.paymill;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.joda.money.Money;
 
@@ -27,12 +28,13 @@ public class PaymillTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		return null;
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 		Transaction transaction = (Transaction) authorization
 				.getUnderlyingAuthorization();
@@ -47,7 +49,7 @@ public class PaymillTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 		Payment payment = PaymillUtils.convertCreditCard(creditcard);
 		Transaction transaction = paymillContext.getPreauthorizationService()
@@ -64,7 +66,7 @@ public class PaymillTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 		Transaction transaction = paymillContext.getTransactionService().get(
 				transactionId);
@@ -76,7 +78,8 @@ public class PaymillTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 		paymillContext.getRefundService().refundTransaction(transactionId,
 				money.getAmount().multiply(BigDecimal.valueOf(100)).intValue());

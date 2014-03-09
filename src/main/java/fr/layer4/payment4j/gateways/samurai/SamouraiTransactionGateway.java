@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.samurai;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -33,12 +34,13 @@ public class SamouraiTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		throw new NotImplementedException();
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 
 		Transaction transaction = Transaction.find(authorization
 				.getTransactionId());
@@ -53,15 +55,15 @@ public class SamouraiTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
-		TransactionOptions options = new TransactionOptions();
-		options.currencyCode = money.getCurrencyUnit().getNumeric3Code();
+		TransactionOptions tOptions = new TransactionOptions();
+		tOptions.currencyCode = money.getCurrencyUnit().getNumeric3Code();
 		Transaction transaction = Processor.theProcessor()
 				.authorize(
 						"",
 						money.getAmount().multiply(BigDecimal.valueOf(100))
-								.longValue(), options);
+								.longValue(), tOptions);
 
 		Authorization authorization = new Authorization();
 		authorization.setTransactionId(transaction.referenceId);
@@ -70,7 +72,7 @@ public class SamouraiTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		Transaction authorization = Transaction.find(transactionId);
 		Transaction voidTransaction = authorization.voidTransaction();
 		Result result = new Result();
@@ -81,7 +83,8 @@ public class SamouraiTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		Transaction authOrPurchase = Transaction.find(transactionId);
 		Transaction reverse = authOrPurchase.reverse(money.getAmount()
 				.multiply(BigDecimal.valueOf(100)));

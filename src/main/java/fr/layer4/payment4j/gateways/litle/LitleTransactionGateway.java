@@ -1,5 +1,6 @@
 package fr.layer4.payment4j.gateways.litle;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -38,7 +39,7 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 
 		Credit credit = new Credit();
 		credit.setCard(convertCreditcard(creditcard));
@@ -60,7 +61,7 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	public Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 		com.litle.sdk.generate.Authorization auth = new com.litle.sdk.generate.Authorization();
 		auth.setOrderId("1");
 		auth.setAmount(money.getAmount().longValue());
@@ -89,7 +90,8 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		return authorization;
 	}
 
-	public Result doCapture(Authorization authorization) {
+	public Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		com.litle.sdk.generate.Capture capture = new com.litle.sdk.generate.Capture();
 		capture.setReportGroup(REPORT_GROUP);
 		// litleTxnId contains the Litle Transaction Id returned on the
@@ -108,7 +110,7 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		return result;
 	}
 
-	public Result doCancel(String transactionId) {
+	public Result doCancel(String transactionId, Map<String, Object> options) {
 		Void dovoid = new Void();
 		dovoid.setReportGroup(REPORT_GROUP);
 		dovoid.setLitleTxnId(Long.valueOf(transactionId));
@@ -120,7 +122,8 @@ public class LitleTransactionGateway extends AbstractTransactionGateway {
 		return result;
 	}
 
-	public Result doRefund(Money money, String transactionId) {
+	public Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		Credit credit = new Credit();
 		credit.setReportGroup(REPORT_GROUP);
 		// litleTxnId contains the Litle Transaction Id returned on the deposit

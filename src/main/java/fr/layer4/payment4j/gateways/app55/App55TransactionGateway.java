@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways.app55;
 
+import java.util.Map;
+
 import org.joda.money.Money;
 
 import com.app55.Environment;
@@ -32,7 +34,7 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 
 		Preconditions.checkNotNull(billingAddress,
 				"Billing address can not be null");
@@ -61,7 +63,8 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 
 		TransactionCreateResponse response = ((TransactionCreateRequest) authorization
 				.getUnderlyingAuthorization()).send();
@@ -74,7 +77,7 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
 		Preconditions.checkNotNull(order, "Order can not be null");
 		Preconditions.checkNotNull(order.getBillingAddress(),
@@ -99,7 +102,7 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		Transaction transaction = new Transaction();
 		transaction.setId(transactionId);
 		getGateway().cancelTransaction(null, transaction);
@@ -109,7 +112,8 @@ public class App55TransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		// TODO
 		Result result = new Result();
 		result.setSuccess(true);

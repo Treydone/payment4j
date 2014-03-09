@@ -41,7 +41,7 @@ public class CreditCardTest {
 
 	@Test
 	public void checkYear_lessThan1990() {
-
+		
 		// Arrange
 		CreditCard creditCard = new CreditCard();
 

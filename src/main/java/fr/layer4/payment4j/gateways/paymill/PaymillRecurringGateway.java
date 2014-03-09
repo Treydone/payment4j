@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.paymill;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.joda.money.Money;
 
@@ -28,7 +29,7 @@ public class PaymillRecurringGateway extends AbstractRecurringGateway {
 
 	@Override
 	protected Result doRecurring(Money money, CreditCard creditcard,
-			Schedule schedule) {
+			Schedule schedule, Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 
 		Payment payment = PaymillUtils.convertCreditCard(creditcard);
@@ -64,7 +65,8 @@ public class PaymillRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected Result doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference,
+			Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 		paymillContext.getSubscriptionService().delete(recurringReference);
 		Result result = new Result();

@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.paymill;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.iban4j.Iban;
 import org.joda.money.Money;
@@ -23,12 +24,12 @@ public class PaymillDirectTransferGateway extends AbstractDirectTransferGateway 
 	}
 
 	@Override
-	protected Result doCredit(Money money, Iban iban) {
+	protected Result doCredit(Money money, Iban iban, Map<String, Object> options) {
 		return null;
 	}
 
 	@Override
-	protected Result doPurchase(Money money, Iban iban) {
+	protected Result doPurchase(Money money, Iban iban, Map<String, Object> options) {
 		PaymillContext paymillContext = new PaymillContext(apiKey);
 		Payment payment = new Payment();
 		payment.setType(Type.DEBIT);

@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.webpay;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import jp.webpay.api.WebPayClient;
 import jp.webpay.model.Charge;
@@ -29,12 +30,13 @@ public class WebPayTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		throw new NotImplementedException();
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		Result result = new Result();
 		WebPayClient client = new WebPayClient(apiKey);
 		Charge capture = client.charges.capture(authorization
@@ -46,7 +48,7 @@ public class WebPayTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 		CardRequest card = new CardRequest().number(creditcard.getNumber())
 				.expMonth(creditcard.getMonth()).expYear(creditcard.getYear())
 				.cvc(Integer.valueOf(creditcard.getVerificationValue()))
@@ -68,7 +70,7 @@ public class WebPayTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		Result result = new Result();
 		WebPayClient client = new WebPayClient(apiKey);
 		client.charges.retrieve(transactionId).refund();
@@ -77,7 +79,8 @@ public class WebPayTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		Result result = new Result();
 		WebPayClient client = new WebPayClient(apiKey);
 		client.charges.refund(transactionId,

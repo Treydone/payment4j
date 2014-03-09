@@ -30,7 +30,7 @@ public class WebPayRecurringGateway extends AbstractRecurringGateway {
 
 	@Override
 	protected Result doRecurring(Money money, CreditCard creditCard,
-			Schedule schedule) {
+			Schedule schedule, Map<String, Object> options) {
 		Date startDate = schedule.getStartDate();
 		if (startDate == null) {
 			startDate = new Date();
@@ -92,7 +92,8 @@ public class WebPayRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected Result doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference,
+			Map<String, Object> options) {
 		try {
 			Customer cu = Customer.retrieve("cus_3QZq87ZoS9yOwO");
 			cu.cancelSubscription(apiKey);

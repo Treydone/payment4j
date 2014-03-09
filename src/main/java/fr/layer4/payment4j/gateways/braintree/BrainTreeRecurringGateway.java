@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways.braintree;
 
+import java.util.Map;
+
 import org.joda.money.Money;
 
 import com.braintreegateway.BraintreeGateway;
@@ -27,7 +29,7 @@ public class BrainTreeRecurringGateway extends AbstractRecurringGateway {
 
 	@Override
 	protected Result doRecurring(Money money, CreditCard creditCard,
-			Schedule schedule) {
+			Schedule schedule, Map<String, Object> options) {
 		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
 				merchantId, publicKey, privateKey);
 		SubscriptionRequest request = new SubscriptionRequest();
@@ -40,7 +42,8 @@ public class BrainTreeRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected Result doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference,
+			Map<String, Object> options) {
 		BraintreeGateway gateway = BrainTreeUtils.getGateway(this.gateway,
 				merchantId, publicKey, privateKey);
 		gateway.subscription().cancel(recurringReference);

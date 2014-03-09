@@ -1,5 +1,9 @@
 package fr.layer4.payment4j;
 
+import java.math.BigDecimal;
+
+import org.joda.money.Money;
+
 public class Item {
 
 	private String id;
@@ -8,9 +12,9 @@ public class Item {
 
 	private String description;
 
-	private java.math.BigDecimal quantity;
+	private BigDecimal quantity;
 
-	private java.math.BigDecimal price;
+	private Money price;
 
 	private boolean taxable;
 
@@ -38,19 +42,19 @@ public class Item {
 		this.description = description;
 	}
 
-	public java.math.BigDecimal getQuantity() {
+	public BigDecimal getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(java.math.BigDecimal quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		this.quantity = quantity;
 	}
 
-	public java.math.BigDecimal getPrice() {
+	public Money getPrice() {
 		return price;
 	}
 
-	public void setPrice(java.math.BigDecimal price) {
+	public void setPrice(Money price) {
 		this.price = price;
 	}
 

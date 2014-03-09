@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.simplifiy;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.joda.money.Money;
 
@@ -29,18 +30,19 @@ public class SimplifyTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		return null;
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		return null;
 	}
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
 		try {
 			Payment payment = Payment.create(
@@ -69,12 +71,13 @@ public class SimplifyTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		return null;
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 
 		try {
 			Refund refund = Refund.create(new PaymentsMap().set("amount", 100L)

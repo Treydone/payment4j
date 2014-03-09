@@ -2,6 +2,7 @@ package fr.layer4.payment4j.gateways.balanced;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 import org.joda.money.Money;
 
@@ -37,7 +38,7 @@ public class BalancedTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		Balanced.configure(apiKey);
 		Credit credit = new Credit();
 		credit.amount = money.getAmount().multiply(BigDecimal.valueOf(100))
@@ -53,7 +54,8 @@ public class BalancedTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		try {
 			((Debit) authorization.getUnderlyingAuthorization()).save();
 		} catch (HTTPError e) {
@@ -64,7 +66,7 @@ public class BalancedTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
 		Hold hold = new Hold();
 		hold.amount = money.getAmount().multiply(BigDecimal.valueOf(100))
@@ -90,7 +92,7 @@ public class BalancedTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		Hold hold = new Hold();
 		hold.transaction_number = transactionId;
 		try {
@@ -102,7 +104,8 @@ public class BalancedTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		return null;
 	}
 }

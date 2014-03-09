@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways.merchantesolutions;
 
+import java.util.Map;
+
 import org.joda.money.Money;
 
 import com.mes.sdk.core.Settings;
@@ -34,7 +36,7 @@ public class MerchanteSolutionsTransactionGateway extends
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		com.mes.sdk.gateway.Gateway mesGateway = new com.mes.sdk.gateway.Gateway(
 				settings);
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.CREDIT)
@@ -52,7 +54,8 @@ public class MerchanteSolutionsTransactionGateway extends
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		com.mes.sdk.gateway.Gateway mesGateway = new com.mes.sdk.gateway.Gateway(
 				settings);
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.SETTLE)
@@ -64,7 +67,7 @@ public class MerchanteSolutionsTransactionGateway extends
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
 		com.mes.sdk.gateway.Gateway mesGateway = new com.mes.sdk.gateway.Gateway(
 				settings);
@@ -95,7 +98,7 @@ public class MerchanteSolutionsTransactionGateway extends
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		com.mes.sdk.gateway.Gateway mesGateway = new com.mes.sdk.gateway.Gateway(
 				settings);
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.VOID)
@@ -105,7 +108,8 @@ public class MerchanteSolutionsTransactionGateway extends
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		com.mes.sdk.gateway.Gateway mesGateway = new com.mes.sdk.gateway.Gateway(
 				settings);
 		GatewayRequest sRequest = new GatewayRequest(TransactionType.REFUND)

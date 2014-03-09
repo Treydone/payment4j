@@ -31,12 +31,13 @@ public class StripeTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		throw new NotImplementedException();
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		Result result = new Result();
 		try {
 			Charge charge = (Charge) authorization.getUnderlyingAuthorization();
@@ -52,7 +53,7 @@ public class StripeTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 		Map<String, Object> defaultChargeParams = new HashMap<String, Object>();
 		defaultChargeParams.put("amount",
 				(money.getAmount().multiply(new BigDecimal(100))).longValue());
@@ -91,7 +92,7 @@ public class StripeTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		Result result = new Result();
 		try {
 			Charge charge = Charge.retrieve(transactionId, apiKey);
@@ -104,7 +105,8 @@ public class StripeTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		Result result = new Result();
 		try {
 			Charge charge = Charge.retrieve(transactionId, apiKey);

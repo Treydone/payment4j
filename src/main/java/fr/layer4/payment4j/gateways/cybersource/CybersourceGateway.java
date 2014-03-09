@@ -1,12 +1,10 @@
-package fr.layer4.payment4j.gateways.merchantesolutions;
+package fr.layer4.payment4j.gateways.cybersource;
 
 import java.util.Set;
 
 import org.joda.money.CurrencyUnit;
 
 import fr.layer4.payment4j.CreditCardType;
-import fr.layer4.payment4j.HistoryCapable;
-import fr.layer4.payment4j.HistoryGateway;
 import fr.layer4.payment4j.RecurringCapable;
 import fr.layer4.payment4j.RecurringGateway;
 import fr.layer4.payment4j.TransactionCapable;
@@ -14,25 +12,21 @@ import fr.layer4.payment4j.TransactionGateway;
 import fr.layer4.payment4j.gateways.AbstractGateway;
 
 /**
- * http://resources.merchante-solutions.com/display/TPGPUB/Java+Client+Library
+ * http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SO_API/html/
  */
-public class MerchanteSolutionsGateway extends AbstractGateway implements
-		TransactionCapable, RecurringCapable, HistoryCapable {
+public class CybersourceGateway extends AbstractGateway implements
+		TransactionCapable, RecurringCapable {
 
 	private TransactionGateway transactionGateway;
 
 	private RecurringGateway recurringGateway;
 
-	private HistoryGateway historyGateway;
-
-	private MerchanteSolutionsGateway(boolean testingMode, String profileId,
-			String profileKey) {
-		transactionGateway = new MerchanteSolutionsTransactionGateway(this,
-				profileId, profileKey);
-		recurringGateway = new MerchanteSolutionsRecurringGateway(this,
-				profileId, profileKey);
-		historyGateway = new MerchanteSolutionsHistoryGateway(this, profileId,
-				profileKey);
+	private CybersourceGateway(boolean testingMode, String username,
+			String transactionKey) {
+		transactionGateway = new CybersourceGatewayTransactionGateway(this,
+				username, transactionKey);
+		recurringGateway = new CybersourceGatewayRecurringGateway(this,
+				username, transactionKey);
 		setTestingMode(testingMode);
 	}
 
@@ -42,10 +36,6 @@ public class MerchanteSolutionsGateway extends AbstractGateway implements
 
 	public RecurringGateway recurring() {
 		return recurringGateway;
-	}
-
-	public HistoryGateway history() {
-		return historyGateway;
 	}
 
 	public Set<CreditCardType> getSupportedCreditCardTypes() {
@@ -67,5 +57,4 @@ public class MerchanteSolutionsGateway extends AbstractGateway implements
 	public Set<String> getSupportedCountries() {
 		return null;
 	}
-
 }

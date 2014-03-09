@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways.paypal;
 
+import java.util.Map;
+
 import org.joda.money.Money;
 
 import paypal.payflow.AuthorizationTransaction;
@@ -41,7 +43,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
 
@@ -98,7 +100,8 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCapture(Authorization authorization) {
+	protected Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
 
@@ -127,7 +130,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	protected Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
 
@@ -200,7 +203,7 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doCancel(String transactionId) {
+	protected Result doCancel(String transactionId, Map<String, Object> options) {
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
 		// Create a new Void Transaction.
@@ -216,7 +219,8 @@ public class PaypalTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	@Override
-	protected Result doRefund(Money money, String transactionId) {
+	protected Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		UserInfo info = new UserInfo(user, vendor, partner, password);
 		PayflowConnectionData connection = new PayflowConnectionData();
 		// If you want to change the amount being credited, you'll need to set

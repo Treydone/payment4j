@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.authorizenet;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import net.authorize.Merchant;
 import net.authorize.aim.Transaction;
@@ -31,7 +32,7 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 
 	@Override
 	protected Result doRecurring(Money money, CreditCard creditCard,
-			Schedule schedule) {
+			Schedule schedule, Map<String, Object> options) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
 
@@ -87,7 +88,8 @@ public class AuthorizeNetRecurringGateway extends AbstractRecurringGateway {
 	}
 
 	@Override
-	protected Result doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference,
+			Map<String, Object> options) {
 
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);

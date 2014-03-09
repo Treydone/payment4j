@@ -1,6 +1,7 @@
 package fr.layer4.payment4j.gateways.merchantesolutions;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.joda.money.Money;
@@ -37,7 +38,7 @@ public class MerchanteSolutionsRecurringGateway extends
 
 	@Override
 	protected Result doRecurring(Money money, CreditCard creditCard,
-			Schedule schedule) {
+			Schedule schedule, Map<String, Object> options) {
 		Rbs rbs = new Rbs(settings);
 
 		RbsRequest cRequest = new RbsRequest(RequestType.CREATE);
@@ -68,7 +69,8 @@ public class MerchanteSolutionsRecurringGateway extends
 	}
 
 	@Override
-	protected Result doCancel(String recurringReference) {
+	protected Result doCancel(String recurringReference,
+			Map<String, Object> options) {
 		Rbs rbs = new Rbs(settings);
 
 		RbsRequest cRequest = new RbsRequest(RequestType.DELETE);

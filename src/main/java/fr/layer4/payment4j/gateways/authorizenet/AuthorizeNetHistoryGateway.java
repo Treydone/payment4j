@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways.authorizenet;
 
+import java.util.Map;
+
 import net.authorize.Merchant;
 import net.authorize.data.xml.reporting.TransactionDetails;
 import net.authorize.reporting.Result;
@@ -21,7 +23,7 @@ public class AuthorizeNetHistoryGateway extends AbstractHistoryGateway {
 		this.transactionKey = transactionKey;
 	}
 
-	public Transactions doList() {
+	public Transactions doList(Map<String, Object> options) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
 

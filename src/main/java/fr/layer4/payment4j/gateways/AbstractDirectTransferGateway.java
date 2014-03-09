@@ -1,5 +1,7 @@
 package fr.layer4.payment4j.gateways;
 
+import java.util.Map;
+
 import org.iban4j.Iban;
 import org.joda.money.Money;
 
@@ -19,11 +21,15 @@ public abstract class AbstractDirectTransferGateway implements
 	}
 
 	public Result credit(Money money, Iban iban) {
+		return credit(money, iban, null);
+	}
+
+	public Result credit(Money money, Iban iban, Map<String, Object> options) {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The iban can not be null", iban);
 		Result result = null;
 		try {
-			result = doCredit(money, iban);
+			result = doCredit(money, iban, options);
 		} catch (Throwable throwable) {
 			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
 					throwable);
@@ -33,14 +39,19 @@ public abstract class AbstractDirectTransferGateway implements
 		return result;
 	}
 
-	protected abstract Result doCredit(Money money, Iban iban);
+	protected abstract Result doCredit(Money money, Iban iban,
+			Map<String, Object> options);
 
 	public Result purchase(Money money, Iban iban) {
+		return purchase(money, iban, null);
+	}
+
+	public Result purchase(Money money, Iban iban, Map<String, Object> options) {
 		Preconditions.checkNotNull("The amount can not be null", money);
 		Preconditions.checkNotNull("The iban can not be null", iban);
 		Result result = null;
 		try {
-			result = doPurchase(money, iban);
+			result = doPurchase(money, iban, options);
 		} catch (Throwable throwable) {
 			throw GatewayUtils.resolveException(gateway.getExceptionResolver(),
 					throwable);
@@ -50,6 +61,7 @@ public abstract class AbstractDirectTransferGateway implements
 		return result;
 	}
 
-	protected abstract Result doPurchase(Money money, Iban iban);
+	protected abstract Result doPurchase(Money money, Iban iban,
+			Map<String, Object> options);
 
 }

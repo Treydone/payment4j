@@ -3,6 +3,7 @@ package fr.layer4.payment4j.gateways.authorizenet;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import net.authorize.Merchant;
@@ -30,6 +31,7 @@ import fr.layer4.payment4j.gateways.AbstractTransactionGateway;
 public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 
 	private String apiLoginId;
+	
 	private String transactionKey;
 
 	protected AuthorizeNetTransactionGateway(Gateway gateway,
@@ -41,7 +43,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 
 	@Override
 	public Result doCredit(Money money, CreditCard creditcard,
-			Address billingAddress) {
+			Address billingAddress, Map<String, Object> options) {
 
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
@@ -59,7 +61,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 	}
 
 	public Authorization doAuthorize(Money money, CreditCard creditcard,
-			Order order) {
+			Order order, Map<String, Object> options) {
 
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
@@ -76,7 +78,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 					OrderItem orderItem = OrderItem.createOrderItem();
 					orderItem.setItemDescription(item.getDescription());
 					orderItem.setItemName(item.getName());
-					orderItem.setItemPrice(item.getPrice());
+					orderItem.setItemPrice(item.getPrice().getAmount());
 					orderItem.setItemQuantity(item.getQuantity());
 					orderItem.setItemId(item.getId());
 					authorizeNetOrder.addOrderItem(orderItem);
@@ -115,7 +117,8 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		return authorization;
 	}
 
-	public Result doCapture(Authorization authorization) {
+	public Result doCapture(Authorization authorization,
+			Map<String, Object> options) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
 		net.authorize.aim.Result<Transaction> authorizeNetResult = (net.authorize.aim.Result<Transaction>) merchant
@@ -125,7 +128,7 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		return result;
 	}
 
-	public Result doCancel(String transactionId) {
+	public Result doCancel(String transactionId, Map<String, Object> options) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
 
@@ -140,7 +143,8 @@ public class AuthorizeNetTransactionGateway extends AbstractTransactionGateway {
 		return result;
 	}
 
-	public Result doRefund(Money money, String transactionId) {
+	public Result doRefund(Money money, String transactionId,
+			Map<String, Object> options) {
 		Merchant merchant = AuthorizeNetUtils.getMerchant(gateway, apiLoginId,
 				transactionKey);
 		Transaction creditTransaction = merchant.createAIMTransaction(
